@@ -59,12 +59,13 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <section id="home" className="relative h-screen aspect-[4/5] w-full">
+      <section id="home" className="relative h-screen w-full">
         <Image
           src={heroCropped}
           alt="watts your impact hero image"
           fill
           priority
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
           className="object-cover object-center"
           quality={100}
         />
