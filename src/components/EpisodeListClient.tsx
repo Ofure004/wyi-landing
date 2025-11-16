@@ -182,8 +182,9 @@ export default function EpisodeListClient({
                     {episode.description}
                   </p>
                   <div className="flex items-center justify-center md:justify-start gap-4">
+                    {/* Prefer Spotify for listening, fall back to YouTube if no Spotify link */}
                     <a
-                      href={episode.youtubeUrl}
+                      href={episode.spotify?.spotifyUrl ?? episode.youtubeUrl}
                       target="_blank"
                       className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 bg-[var(--brand-pink)] group"
                     >
@@ -196,8 +197,9 @@ export default function EpisodeListClient({
                       </span>
                       <SvgMic className="relative z-10 w-5 h-5 text-white transition-colors duration-200 group-hover:text-black" />
                     </a>
+                    {/* Watch should always go to the YouTube video */}
                     <a
-                      href={episode.spotify?.spotifyUrl ?? episode.youtubeUrl}
+                      href={episode.youtubeUrl}
                       target="_blank"
                       className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 bg-[var(--brand-pink)] group"
                     >
