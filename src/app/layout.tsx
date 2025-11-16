@@ -15,9 +15,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "watts-your-impact — Podcast",
+  title: "watts-your-impact",
   description:
     "watts-your-impact is a podcast exploring electrifying ideas, climate tech, and the people powering change.",
+  // Use WYi logo as the site icon + social preview image
+  icons: {
+    icon: "/images/logo.svg",
+  },
+  openGraph: {
+    title: "watts-your-impact",
+    description:
+      "watts-your-impact is a podcast exploring electrifying ideas, climate tech, and the people powering change.",
+    images: ["/images/wyilogos/wyiyellow.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "watts-your-impact — Podcast",
+    description:
+      "watts-your-impact is a podcast exploring electrifying ideas, climate tech, and the people powering change.",
+    images: ["/images/wyilogos/wyiyellow.png"],
+  },
 };
 
 export default function RootLayout({

@@ -134,7 +134,7 @@ export default async function Home() {
 
       <section>
         <div className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-          <div className="max-w-6xl mx-auto px-12 lg:px-24 py-10 md:py-12 my-10 md:my-12 flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-12">
+          <div className=" mx-auto px-12 lg:px-24 py-10 md:py-12 my-10 md:my-12 flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-12">
             <a
               href="https://open.spotify.com/show/4d1u94a9G8aOJdFk7KmF8l?si=1c8b222c461e4850"
               target="_blank"
@@ -170,7 +170,7 @@ export default async function Home() {
         </div>
       </section>
       <section className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-10 md:py-12 mb-10 md:mb-12">
+        <div className="mx-auto px-4 md:px-8 lg:px-24 py-10 md:py-12 mb-10 md:mb-12">
           <h2 className="text-[var(--brand-yellow)] font-semibold font-charleville text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
             Stay posted on the latest podcast episodes.
           </h2>
@@ -204,13 +204,16 @@ export default async function Home() {
           </p>
         </div>
       </section>
-      <section id="contact">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-12">
-          <p className="text-4xl sm:text-5xl md:text-6xl italic font-bold text-center md:text-left">
+      <section
+        id="contact"
+        className="border-b-2 border-[rgba(250,204,21,0.15)]"
+      >
+        <div className="mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-12">
+          <p className="max-w-7xl text-4xl sm:text-5xl md:text-6xl italic font-bold text-center">
             What&apos;s <br className="hidden sm:block" /> your impact?
           </p>
-          <div className="flex flex-col items-center md:items-start gap-4">
-            <p className="text-base sm:text-lg font-medium tracking-wide max-w-xl text-center md:text-left">
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-base sm:text-lg font-medium tracking-wide max-w-xl text-center">
               Everyone has the power to make an impact. Want to share how
               you&apos;re creating change — in your community, your career, or
               your own small way? Send us a mail, Let&apos;s talk about it!
@@ -231,7 +234,7 @@ export default async function Home() {
         <Marquee />
       </section> */}
       <section id="footer" className="w-full border-t border-white/10">
-        <div className="flex flex-col items-center justify-between gap-6 pt-10 md:pt-12 max-w-6xl mx-auto px-4 md:px-8 lg:px-12 pb-10">
+        <div className="flex flex-col items-center justify-between gap-6 pt-10 md:pt-12 max-w-6xl mx-auto px-4 md:px-8 lg:px-12">
           <div className="flex flex-col md:flex-row items-center mx-auto justify-between w-full gap-6">
             <Image
               src="/images/logo.svg"
