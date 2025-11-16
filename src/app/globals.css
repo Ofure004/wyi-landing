@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f7ff; /* light base */
+  --foreground: #0b0b0b; /* dark text */
+  --brand-purple: #680764;
+  --brand-pink: #930e80;
+  --brand-yellow: #facc15;
+  --brand-black: #0b0b0b;
+  --brand-orange: #ff6c24;
+  --brand-red: #ea1235;
+  --brand-gradient: radial-gradient(
+      1200px 600px at 50% -10%,
+      rgba(124, 58, 237, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 400px at 90% 10%,
+      rgba(250, 204, 21, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 300px at 10% 20%,
+      rgba(124, 58, 237, 0.15),
+      transparent 60%
+    );
+
+  /* Prefer Montserrat for digits if Charleville lacks numeral glyphs */
+  --font-charleville: "Charleville", var(--font-montserrat), serif;
 }
 
 @theme inline {
@@ -10,17 +38,241 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-black: var(--brand-black);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-red: var(--brand-red);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0b0b0b;
+    --foreground: #f8f7ff;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat, Arial, Helvetica, sans-serif);
+}
+
+/* Charleville local font */
+@font-face {
+  font-family: "Charleville";
+  src: url("/fonts/charleville/Charleville Free.woff2") format("woff2"),
+    url("/fonts/charleville/Charleville Free.ttf") format("truetype");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Cute, smooth animations */
+@keyframes floaty {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-brand-gradient {
+  background-image: var(--brand-gradient);
+}
+
+.animate-floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+.animate-shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--brand-yellow),
+    var(--brand-purple),
+    var(--brand-yellow)
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 5s ease-in-out infinite;
+}
+
+/* Utility class to apply the local Charleville font */
+.font-charleville {
+  font-family: var(--font-charleville, "Charleville", serif) !important;
+  /* Force modern numeral shapes when available, and improve alignment */
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+/* Utility class to apply the Montserrat variable imported via next/font */
+.font-montserrat {
+  font-family: var(
+    --font-montserrat,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial
+  ) !important;
+}
+
+/* Ensure anchored sections are not hidden under the fixed nav */
+section[id] {
+  scroll-margin-top: 6rem; /* ~96px, slightly larger than nav height */
+}
+
+/* Animated nav link effect (scoped to .nav-link) */
+.nav-link {
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+}
+
+.nav-link::before,
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+.nav-link::before {
+  background-color: var(--brand-pink);
+  height: 2px;
+  bottom: 0;
+  transform-origin: 100% 50%;
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.nav-link::after {
+  content: attr(data-replace);
+  height: 100%;
+  top: 0;
+  transform-origin: 100% 50%;
+  transform: translate3d(200%, 0, 0);
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+  color: var(--brand-pink);
+}
+
+.nav-link:hover::before {
+  transform-origin: 0% 50%;
+  transform: scaleX(1);
+}
+.nav-link:hover::after {
+  transform: translate3d(0, 0, 0);
+}
+
+.nav-link span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.nav-link:hover span {
+  transform: translate3d(-200%, 0, 0);
+}
+
+/* Active link state: keep underline, make replacement color brand-pink and italic */
+.nav-link.active,
+.nav-link[aria-current="page"] {
+  color: var(--brand-pink);
+}
+.nav-link.active::before,
+.nav-link[aria-current="page"]::before {
+  transform-origin: 0% 50%;
+  transform: scaleX(1);
+}
+.nav-link.active::after,
+.nav-link[aria-current="page"]::after {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Simple marquee for partner/logo strip */
+/* Marquee wrapper */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: var(--background, #000);
+}
+
+/* The moving track */
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 6rem;
+  width: max-content; /* let it size to content */
+  animation: scroll 25s linear infinite;
+}
+
+/* Each logo item */
+.marquee-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animation: shift left exactly 50% (since we doubled content) */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Edge fade */
+.marquee::before,
+.marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.marquee::before {
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    var(--background, #000) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.marquee::after {
+  right: 0;
+  background: linear-gradient(
+    270deg,
+    var(--background, #000) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Pause on hover */
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
