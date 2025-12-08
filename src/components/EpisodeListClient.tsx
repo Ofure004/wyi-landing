@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
-  SvgMic,
   SvgArrow,
   SvgChevronLeft,
   SvgChevronRight,
+  SvgSpotify,
+  SvgApple,
 } from "../../public/assets/svgs";
 import type { EpisodeItem } from "@/lib/episodes";
 
@@ -182,7 +183,7 @@ export default function EpisodeListClient({
                     {episode.description}
                   </p>
                   <div className="flex items-center justify-center md:justify-start gap-4">
-                    {/* Prefer Spotify for listening, fall back to YouTube if no Spotify link */}
+                    {/* Spotify button – fall back to YouTube if no Spotify-specific URL */}
                     <a
                       href={episode.spotify?.spotifyUrl ?? episode.youtubeUrl}
                       target="_blank"
@@ -193,9 +194,25 @@ export default function EpisodeListClient({
                         aria-hidden
                       />
                       <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black">
-                        Listen
+                        Spotify
                       </span>
-                      <SvgMic className="relative z-10 w-5 h-5 text-white transition-colors duration-200 group-hover:text-black" />
+                      <SvgSpotify className="relative z-10 w-5 h-5 text-white transition-colors duration-200 group-hover:text-black" />
+                    </a>
+
+                    {/* Apple Podcasts button – prefer per-episode Apple URL, fall back to YouTube */}
+                    <a
+                      href={episode.apple?.appleUrl ?? episode.youtubeUrl}
+                      target="_blank"
+                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 bg-[var(--brand-pink)] group"
+                    >
+                      <span
+                        className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-2xl"
+                        aria-hidden
+                      />
+                      <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black">
+                        Apple Podcasts
+                      </span>
+                      <SvgApple className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
                     </a>
                     {/* Watch should always go to the YouTube video */}
                     <a
