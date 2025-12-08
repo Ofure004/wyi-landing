@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
         hostname: "i4.ytimg.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "d3t3ozftmdmh3i.cloudfront.net",
+        pathname: "/**",
+      },
     ],
   },
 };

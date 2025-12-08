@@ -1,11 +1,12 @@
 import Image from "next/image";
 import {
-  SvgMic,
   SvgArrow,
   SvgInstagram,
   SvgTiktok,
   SvgTwitter,
   SvgMail,
+  SvgApple,
+  SvgSpotify,
 } from "../../public/assets/svgs";
 import heroCropped from "../../public/images/hero-cropped.jpg";
 // import Marquee from "../components/Marquee";
@@ -81,7 +82,7 @@ export default async function Home() {
         {/* Latest episode content */}
         {latest && (
           <div className="absolute inset-0 z-20 flex items-end">
-            <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end mx-auto px-4 pb-24 md:pb-12 gap-6">
+            <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end mx-auto px-4 pb-8 md:pb-12 gap-6">
               <div className="max-w-4xl">
                 <div className="text-sm uppercase tracking-widest text-[var(--brand-yellow)] mb-4">
                   <span>EPISODE&nbsp;</span>
@@ -91,7 +92,7 @@ export default async function Home() {
                   <span>&nbsp;\&nbsp;</span>
                   <span>{formatDate(latest.publishedAt)}</span>
                 </div>
-                <h1 className="font-charleville text-[clamp(2rem,8vw,3.5rem)] md:text-[clamp(2.5rem,6vw,55px)] leading-tight text-[var(--brand-yellow)]">
+                <h1 className="font-charleville text-[clamp(2rem,8vw,3.5rem)] lg:text-[clamp(2.5rem,6vw,55px)] leading-tight text-[var(--brand-yellow)]">
                   {renderDigitsWithFallback(latest.title)}
                 </h1>
               </div>
@@ -108,8 +109,9 @@ export default async function Home() {
                   <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
                     Listen
                   </span>
-                  <SvgMic className="relative z-10 w-5 h-5 text-white transition-colors duration-200 group-hover:text-black" />
+                  <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
                 </a>
+
                 <a
                   href={latest.youtubeUrl}
                   target="_blank"
@@ -136,7 +138,7 @@ export default async function Home() {
         <div className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
           <div className=" mx-auto px-12 lg:px-24 py-10 md:py-12 my-10 md:my-12 flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-12">
             <a
-              href="https://open.spotify.com/show/4d1u94a9G8aOJdFk7KmF8l?si=1c8b222c461e4850"
+              href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
               target="_blank"
               className="relative overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group"
             >
@@ -147,10 +149,11 @@ export default async function Home() {
               <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg md:text-xl text-left">
                 Listen on Spotify
               </span>
-              <SvgMic className="relative z-10 w-5 h-5 text-white transition-colors duration-200 group-hover:text-black" />
+              <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
             </a>
+
             <a
-              href="https://www.youtube.com/@wattsyourimpact"
+              href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
               target="_blank"
               className="relative overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group"
             >
@@ -159,9 +162,9 @@ export default async function Home() {
                 aria-hidden
               />
               <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg md:text-xl text-left">
-                Subscribe on YouTube
+                Listen on Apple Podcasts
               </span>
-              <SvgArrow className="relative z-10 w-5 h-5 text-white transition-colors duration-200 group-hover:text-black" />
+              <SvgApple className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
             </a>
           </div>
         </div>
@@ -219,8 +222,7 @@ export default async function Home() {
               your own small way? Send us a mail, Let&apos;s talk about it!
             </p>
             <a
-              href="https://wattsyourimpact.com/"
-              target="_blank"
+              href="mailto:info@wattsyourimpact.com"
               className="overflow-hidden rounded-xl px-6 md:px-8 py-3 md:py-4 font-semibold shadow-lg border border-[var(--brand-yellow)] inline-flex items-center gap-3 hover:bg-[var(--brand-orange)] hover:border-none group"
             >
               <p className="text-[var(--brand-yellow)] transition-colors duration-200 font-bold text-lg md:text-xl group-hover:text-[var(--brand-red)]">
@@ -244,7 +246,7 @@ export default async function Home() {
               className="object-contain"
             />
 
-            <div className="flex flex-col items-center md:items-end gap-2">
+            <div className="flex flex-col items-center gap-2">
               <p className="text-white text-xl md:text-2xl font-semibold">
                 Follow us on socials
               </p>
@@ -280,6 +282,15 @@ export default async function Home() {
                   <SvgMail width={40} height={40} />
                 </a>
               </div>
+              <p className="text-[var(--brand-yellow)] text-sm">
+                You can also make inquiries here:{" "}
+                <a
+                  href="mailto:wattsyourimpact@gmail.com"
+                  className="hover:text-[var(--brand-orange)] transition-colors duration-200 underline"
+                >
+                  wattsyourimpact@gmail.com
+                </a>
+              </p>
             </div>
           </div>
 

@@ -9,3 +9,5 @@ export * from "./tiktok";
 export * from "./instagram";
 export * from "./twitter";
 export * from "./chevron-up";
+export * from "./spotify";
+export * from "./apple";

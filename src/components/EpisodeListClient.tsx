@@ -182,12 +182,12 @@ export default function EpisodeListClient({
                   <p className="font-montserrat text-white/80 max-w-prose mb-6">
                     {episode.description}
                   </p>
-                  <div className="flex items-center justify-center md:justify-start gap-4">
+                  <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-4">
                     {/* Spotify button – fall back to YouTube if no Spotify-specific URL */}
                     <a
                       href={episode.spotify?.spotifyUrl ?? episode.youtubeUrl}
                       target="_blank"
-                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 bg-[var(--brand-pink)] group"
+                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group w-3/4 md:w-auto"
                     >
                       <span
                         className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-2xl"
@@ -201,9 +201,9 @@ export default function EpisodeListClient({
 
                     {/* Apple Podcasts button – prefer per-episode Apple URL, fall back to YouTube */}
                     <a
-                      href={episode.apple?.appleUrl ?? episode.youtubeUrl}
+                      href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
                       target="_blank"
-                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 bg-[var(--brand-pink)] group"
+                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group w-3/4 md:w-auto"
                     >
                       <span
                         className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-2xl"
@@ -218,7 +218,7 @@ export default function EpisodeListClient({
                     <a
                       href={episode.youtubeUrl}
                       target="_blank"
-                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 bg-[var(--brand-pink)] group"
+                      className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group w-3/4 md:w-auto"
                     >
                       <span
                         className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100"

@@ -2,7 +2,22 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Create a `.env` file in the root directory with the following variables:
+
+```bash
+# YouTube Configuration
+YOUTUBE_CHANNEL_ID=your_channel_id
+YOUTUBE_RSS_URL=https://www.youtube.com/feeds/videos.xml?channel_id=your_channel_id
+
+# Spotify Configuration
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_SHOW_ID=your_spotify_show_id
+```
+
+### Running the Development Server
 
 ```bash
 npm run dev
@@ -19,6 +34,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Episode Matching
+
+The app fetches episodes from YouTube RSS and matches them with Spotify episodes by:
+
+- **Publish date** (primary matching strategy)
+- **Duration** (for disambiguation when multiple episodes share the same date)
+
+Spotify episode data is cached in memory for 1 hour to reduce API calls.
 
 ## Learn More
 
