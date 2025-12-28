@@ -38,7 +38,7 @@ function isLikelyShortFromRss(raw: any, durationSeconds?: number) {
 export async function getEpisodesGrouped(): Promise<EpisodeGroup[]> {
   // Prefer fetching episodes from the YouTube RSS feed to avoid YouTube API
   // quota limits. We fall back to the Data API only if RSS is not configured.
-  const channelId = process.env.YOUTUBE_CHANNEL_ID;
+  const channelId = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
   const rssUrl =
     process.env.YOUTUBE_RSS_URL ||
     (channelId
@@ -128,7 +128,10 @@ export async function getEpisodesGrouped(): Promise<EpisodeGroup[]> {
     ).then((arr) => arr.filter(Boolean) as EpisodeItem[]);
   } else {
     // Fallback: use the YouTube Data API (will consume quota).
-    if (process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID) {
+    if (
+      process.env.YOUTUBE_API_KEY &&
+      process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID
+    ) {
       const { getChannelVideos, getVideosDetails, isLikelyShort } =
         await import("./youtube");
 
@@ -197,7 +200,7 @@ export async function getEpisodesGrouped(): Promise<EpisodeGroup[]> {
       ).then((arr) => arr.filter(Boolean) as EpisodeItem[]);
     } else {
       throw new Error(
-        "No YouTube RSS URL configured and YOUTUBE_API_KEY/YOUTUBE_CHANNEL_ID are missing."
+        "No YouTube RSS URL configured and YOUTUBE_API_KEY/NEXT_PUBLIC_YOUTUBE_CHANNEL_ID are missing."
       );
     }
   }

@@ -3,7 +3,7 @@
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const SHOW_ID = process.env.SPOTIFY_SHOW_ID;
+const SHOW_ID = process.env.NEXT_PUBLIC_SPOTIFY_SHOW_ID;
 
 export type SpotifyEpisodeInfo = {
   spotifyUrl?: string;
@@ -51,7 +51,7 @@ async function getSpotifyToken(): Promise<string> {
  */
 async function getAllShowEpisodes(): Promise<SpotifyEpisode[]> {
   if (!SHOW_ID) {
-    console.warn("SPOTIFY_SHOW_ID not configured");
+    console.warn("NEXT_PUBLIC_SPOTIFY_SHOW_ID not configured");
     return [];
   }
 

@@ -8,13 +8,13 @@ Create a `.env` file in the root directory with the following variables:
 
 ```bash
 # YouTube Configuration
-YOUTUBE_CHANNEL_ID=your_channel_id
+NEXT_PUBLIC_YOUTUBE_CHANNEL_ID=your_channel_id
 YOUTUBE_RSS_URL=https://www.youtube.com/feeds/videos.xml?channel_id=your_channel_id
 
 # Spotify Configuration
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-SPOTIFY_SHOW_ID=your_spotify_show_id
+NEXT_PUBLIC_SPOTIFY_SHOW_ID=your_spotify_show_id
 ```
 
 ### Running the Development Server

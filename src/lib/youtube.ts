@@ -2,10 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const YT_KEY = process.env.YOUTUBE_API_KEY!;
-const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID!;
+const CHANNEL_ID = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!;
 
 if (!YT_KEY) throw new Error("Missing YOUTUBE_API_KEY in env");
-if (!CHANNEL_ID) throw new Error("Missing YOUTUBE_CHANNEL_ID in env");
+if (!CHANNEL_ID)
+  throw new Error("Missing NEXT_PUBLIC_YOUTUBE_CHANNEL_ID in env");
 
 export type YTPlaylist = {
   id: string;
