@@ -63,7 +63,7 @@ export default async function Home() {
       <section id="home" className="relative h-screen w-full">
         <Image
           src={heroCropped}
-          alt="watts your impact hero image"
+          alt="Watts Your Impact podcast — real stories from changemakers driving impact"
           fill
           priority
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"

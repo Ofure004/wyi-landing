@@ -11,6 +11,7 @@ export type EpisodeItem = {
   durationSeconds: number | null;
   durationFormatted: string | null;
   youtubeUrl: string;
+  category?: string;
   spotify: {
     spotifyUrl?: string;
     durationMs?: number;
@@ -68,9 +69,14 @@ async function maybeEnrichSpotify(
  * channel's uploads playlist with pagination, so every episode is reachable.
  */
 async function getEpisodesFromApi(): Promise<EpisodeItem[]> {
-  const { getAllChannelUploads } = await import("./youtube");
+  const { getAllChannelUploads, getVideoCategoryMap } = await import(
+    "./youtube"
+  );
 
-  const uploads = await getAllChannelUploads();
+  const [uploads, categoryMap] = await Promise.all([
+    getAllChannelUploads(),
+    getVideoCategoryMap(),
+  ]);
 
   const seen = new Set<string>();
   const out: EpisodeItem[] = [];
@@ -102,6 +108,7 @@ async function getEpisodesFromApi(): Promise<EpisodeItem[]> {
       durationSeconds: video.durationSeconds ?? null,
       durationFormatted: formatDuration(video.durationSeconds),
       youtubeUrl: video.youtubeUrl,
+      category: categoryMap[video.id],
       spotify,
     });
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
   SvgArrow,
@@ -17,6 +17,24 @@ type Props = {
   initialPage?: number;
 };
 
+// Preferred display order for the category filter; any unexpected categories
+// found in the data are appended after these.
+const CATEGORY_ORDER = [
+  "Career",
+  "Entertainment",
+  "Entrepreneurship",
+  "Sustainability",
+];
+
+// Accent colors for the per-episode category badge (kept in the brand palette;
+// sustainability uses a green that reads naturally for the theme).
+const CATEGORY_COLORS: Record<string, string> = {
+  Career: "var(--brand-yellow)",
+  Entertainment: "var(--brand-pink)",
+  Entrepreneurship: "var(--brand-orange)",
+  Sustainability: "#3fbf6b",
+};
+
 export default function EpisodeListClient({
   excludeId,
   pageSize = 4,
@@ -25,6 +43,7 @@ export default function EpisodeListClient({
   const [all, setAll] = useState<EpisodeItem[]>([]);
   const [page, setPage] = useState<number>(initialPage);
   const [loading, setLoading] = useState<boolean>(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const renderDigitsWithMontItalic = (text?: string | null) => {
     if (!text) return null;
@@ -108,10 +127,32 @@ export default function EpisodeListClient({
     };
   }, [excludeId, pageSize]);
 
-  const total = all.length;
+  // Categories actually present in the data, in preferred order. Empty when no
+  // episode is categorized (e.g. RSS fallback) — the filter bar then hides.
+  const categories = useMemo(() => {
+    const present = new Set(
+      all.map((e) => e.category).filter(Boolean) as string[]
+    );
+    const ordered = CATEGORY_ORDER.filter((c) => present.has(c));
+    const extras = [...present].filter((c) => !CATEGORY_ORDER.includes(c));
+    return [...ordered, ...extras];
+  }, [all]);
+
+  // Reset to the first page whenever the active category changes.
+  useEffect(() => {
+    setPage(0);
+  }, [activeCategory]);
+
+  const view = useMemo(
+    () =>
+      activeCategory ? all.filter((e) => e.category === activeCategory) : all,
+    [all, activeCategory]
+  );
+
+  const total = view.length;
   const pages = Math.max(1, Math.ceil(total / pageSize));
   const start = page * pageSize;
-  const visible = all.slice(start, start + pageSize);
+  const visible = view.slice(start, start + pageSize);
 
   const getPageItems = (current: number, totalPages: number) => {
     const out: Array<number | string> = [];
@@ -143,6 +184,42 @@ export default function EpisodeListClient({
 
   return (
     <div>
+      {categories.length > 0 && (
+        <div className="container mx-auto px-12 lg:px-0 max-w-7xl mb-12">
+          <div className="flex items-center justify-between gap-4 border-b-2 border-[rgba(250,204,21,0.15)] pb-6">
+            <div
+              className="flex gap-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1"
+              role="tablist"
+              aria-label="Filter episodes by category"
+            >
+              {[null, ...categories].map((cat) => {
+                const isActive = activeCategory === cat;
+                const label = cat ?? "All";
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-montserrat uppercase tracking-widest transition-colors cursor-pointer ${
+                      isActive
+                        ? "bg-[var(--brand-pink)] text-white"
+                        : "border border-[rgba(250,204,21,0.15)] text-[var(--brand-yellow)]/70 hover:text-[var(--brand-yellow)]"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <span className="hidden md:block text-xs uppercase tracking-widest text-white/40 whitespace-nowrap">
+              {total} {total === 1 ? "episode" : "episodes"}
+            </span>
+          </div>
+        </div>
+      )}
+
       {loading && <div className="text-white/60 mb-6">Loading...</div>}
 
       <div>
@@ -170,11 +247,26 @@ export default function EpisodeListClient({
                     <span className="font-montserrat italic">
                       {(() => {
                         const idx = all.findIndex((x) => x.id === episode.id);
-                        return idx >= 0 ? String(total - idx) : "";
+                        return idx >= 0 ? String(all.length - idx) : "";
                       })()}
                     </span>
                     <span>&nbsp;\&nbsp;</span>
                     <span>{formatDate(episode.publishedAt)}</span>
+                    {episode.category && (
+                      <>
+                        <span>&nbsp;\&nbsp;</span>
+                        <span
+                          className="font-semibold"
+                          style={{
+                            color:
+                              CATEGORY_COLORS[episode.category] ??
+                              "var(--brand-yellow)",
+                          }}
+                        >
+                          {episode.category}
+                        </span>
+                      </>
+                    )}
                   </div>
                   <h3 className="font-charleville text-4xl md:text-6xl leading-tight text-[var(--brand-yellow)] mb-6">
                     {renderDigitsWithMontItalic(episode.title)}

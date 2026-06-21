@@ -18,7 +18,7 @@ export function Nav() {
           >
             <Image
               src={logo}
-              alt="watts your impact logo"
+              alt="Watts Your Impact podcast logo"
               width={40}
               height={40}
               className="w-full h-full object-contain"

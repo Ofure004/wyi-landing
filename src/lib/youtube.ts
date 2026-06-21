@@ -222,6 +222,66 @@ export async function getAllChannelUploads(): Promise<YTVideo[]> {
 }
 
 /**
+ * Canonical episode categories. A YouTube playlist is treated as a category
+ * when its title matches one of these (case/spacing-insensitive).
+ */
+export const EPISODE_CATEGORIES = [
+  "Career",
+  "Entertainment",
+  "Entrepreneurship",
+  "Sustainability",
+] as const;
+export type EpisodeCategory = (typeof EPISODE_CATEGORIES)[number];
+
+function normalizeTitle(s: string): string {
+  return s.toLowerCase().replace(/[^a-z]/g, "");
+}
+
+/**
+ * Build a videoId -> category map from the channel's public playlists.
+ *
+ * Only playlists whose (normalized) title matches one of EPISODE_CATEGORIES are
+ * considered. Failures are swallowed so categorization degrades gracefully to
+ * an empty map (the UI then simply shows no filters). Quota: 1 unit for the
+ * playlists listing + 1 unit per matched playlist page.
+ */
+export async function getVideoCategoryMap(): Promise<
+  Record<string, EpisodeCategory>
+> {
+  const map: Record<string, EpisodeCategory> = {};
+
+  let playlists: YTPlaylist[];
+  try {
+    playlists = await getPlaylists();
+  } catch {
+    return map;
+  }
+
+  const catLookup = EPISODE_CATEGORIES.map((label) => ({
+    key: normalizeTitle(label),
+    label,
+  }));
+
+  for (const pl of playlists) {
+    const match = catLookup.find((c) =>
+      normalizeTitle(pl.title).includes(c.key)
+    );
+    if (!match) continue;
+    try {
+      const items = await getPlaylistItems(pl.id);
+      for (const it of items) {
+        // First matching playlist wins if a video appears in several.
+        if (!map[it.id]) map[it.id] = match.label;
+      }
+    } catch {
+      // ignore a single failing playlist and keep going
+    }
+  }
+
+  return map;
+}
+
+/**
  * Heuristic: is this a short?
  * - durationSeconds < 60 OR
  * - thumbnail vertical (height > width where available) OR
