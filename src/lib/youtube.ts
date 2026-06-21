@@ -237,24 +237,24 @@ function normalizeTitle(s: string): string {
   return s.toLowerCase().replace(/[^a-z]/g, "");
 }
 
+export type CategorizedVideo = YTVideo & { category: EpisodeCategory };
+
 /**
- * Build a videoId -> category map from the channel's public playlists.
+ * Return every video that belongs to a category playlist, tagged with its
+ * category and enriched with durations.
  *
  * Only playlists whose (normalized) title matches one of EPISODE_CATEGORIES are
- * considered. Failures are swallowed so categorization degrades gracefully to
- * an empty map (the UI then simply shows no filters). Quota: 1 unit for the
- * playlists listing + 1 unit per matched playlist page.
+ * considered, so the on-site category lists/counts mirror the real YouTube
+ * playlists exactly. Failures degrade gracefully to an empty list (the UI then
+ * shows no filters). Quota: 1 unit for the playlists listing + 1 per matched
+ * playlist page + 1 per 50 videos for duration enrichment.
  */
-export async function getVideoCategoryMap(): Promise<
-  Record<string, EpisodeCategory>
-> {
-  const map: Record<string, EpisodeCategory> = {};
-
+export async function getCategorizedVideos(): Promise<CategorizedVideo[]> {
   let playlists: YTPlaylist[];
   try {
     playlists = await getPlaylists();
   } catch {
-    return map;
+    return [];
   }
 
   const catLookup = EPISODE_CATEGORIES.map((label) => ({
@@ -262,6 +262,8 @@ export async function getVideoCategoryMap(): Promise<
     label,
   }));
 
+  // First matching playlist wins if a video appears in several.
+  const byId = new Map<string, CategorizedVideo>();
   for (const pl of playlists) {
     const match = catLookup.find((c) =>
       normalizeTitle(pl.title).includes(c.key)
@@ -270,15 +272,30 @@ export async function getVideoCategoryMap(): Promise<
     try {
       const items = await getPlaylistItems(pl.id);
       for (const it of items) {
-        // First matching playlist wins if a video appears in several.
-        if (!map[it.id]) map[it.id] = match.label;
+        if (!byId.has(it.id)) byId.set(it.id, { ...it, category: match.label });
       }
     } catch {
       // ignore a single failing playlist and keep going
     }
   }
 
-  return map;
+  // Enrich with real durations (playlistItems doesn't include them).
+  const ids = [...byId.keys()];
+  if (ids.length) {
+    const details = await getVideosDetails(ids);
+    for (const id of ids) {
+      const det = details[id];
+      const v = byId.get(id)!;
+      if (det) {
+        v.durationISO = det.durationISO ?? v.durationISO;
+        v.durationSeconds = det.durationSeconds ?? v.durationSeconds;
+        v.thumbnails = det.thumbnails ?? v.thumbnails;
+        if (!v.title && det.title) v.title = det.title;
+      }
+    }
+  }
+
+  return [...byId.values()];
 }
 
 /**

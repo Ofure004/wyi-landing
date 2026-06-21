@@ -69,33 +69,28 @@ async function maybeEnrichSpotify(
  * channel's uploads playlist with pagination, so every episode is reachable.
  */
 async function getEpisodesFromApi(): Promise<EpisodeItem[]> {
-  const { getAllChannelUploads, getVideoCategoryMap } = await import(
+  const { getAllChannelUploads, getCategorizedVideos } = await import(
     "./youtube"
   );
 
-  const [uploads, categoryMap] = await Promise.all([
+  const [uploads, categorized] = await Promise.all([
     getAllChannelUploads(),
-    getVideoCategoryMap(),
+    getCategorizedVideos(),
   ]);
 
-  const seen = new Set<string>();
-  const out: EpisodeItem[] = [];
+  const categoryById = new Map(categorized.map((v) => [v.id, v.category]));
 
-  for (const video of uploads) {
-    if (seen.has(video.id)) continue;
-    seen.add(video.id);
-
-    if (isShort(video.durationSeconds, video.youtubeUrl)) continue;
-
+  const toEpisode = async (
+    video: any,
+    category: string | undefined
+  ): Promise<EpisodeItem> => {
     const spotify = await maybeEnrichSpotify(
       video.title || "",
       video.publishedAt,
       video.durationSeconds
     );
-
     const thumbnails = (video.thumbnails as any) || {};
-
-    out.push({
+    return {
       id: video.id,
       title: video.title || "",
       description: (video.description || "").slice(0, 300),
@@ -108,9 +103,32 @@ async function getEpisodesFromApi(): Promise<EpisodeItem[]> {
       durationSeconds: video.durationSeconds ?? null,
       durationFormatted: formatDuration(video.durationSeconds),
       youtubeUrl: video.youtubeUrl,
-      category: categoryMap[video.id],
+      category,
       spotify,
-    });
+    };
+  };
+
+  const seen = new Set<string>();
+  const out: EpisodeItem[] = [];
+
+  // 1) Channel uploads — drop only *uncategorized* Shorts. Anything curated
+  // into a category playlist is kept regardless of length.
+  for (const video of uploads) {
+    if (seen.has(video.id)) continue;
+    seen.add(video.id);
+
+    const category = categoryById.get(video.id);
+    if (!category && isShort(video.durationSeconds, video.youtubeUrl)) continue;
+
+    out.push(await toEpisode(video, category));
+  }
+
+  // 2) Any categorized video not present in the uploads feed (e.g. a collab on
+  // another channel). Included so each category's count mirrors its playlist.
+  for (const video of categorized) {
+    if (seen.has(video.id)) continue;
+    seen.add(video.id);
+    out.push(await toEpisode(video, video.category));
   }
 
   return out;
