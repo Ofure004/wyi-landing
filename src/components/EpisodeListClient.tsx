@@ -103,10 +103,9 @@ export default function EpisodeListClient({
           const bt = b.publishedAt ? Date.parse(b.publishedAt) : 0;
           return bt - at;
         });
-        // locally exclude the header/latest episode if requested
-        if (excludeId) {
-          items = items.filter((it) => it.id !== excludeId);
-        }
+        // Keep the full catalogue in `all` (including the featured/header
+        // episode) so categories and counts reflect the true totals. The
+        // featured episode is excluded only from the rendered list, in `view`.
         if (mounted) {
           setAll(items);
           // reset page if out of bounds after filtering
@@ -143,10 +142,20 @@ export default function EpisodeListClient({
     setPage(0);
   }, [activeCategory]);
 
-  const view = useMemo(
+  // Episodes matching the active category (full catalogue, incl. featured) —
+  // used for the displayed count so it reflects the true number of videos.
+  const inCategory = useMemo(
     () =>
       activeCategory ? all.filter((e) => e.category === activeCategory) : all,
     [all, activeCategory]
+  );
+  const count = inCategory.length;
+
+  // The rendered list excludes the featured/header episode (shown in the hero).
+  const view = useMemo(
+    () =>
+      excludeId ? inCategory.filter((e) => e.id !== excludeId) : inCategory,
+    [inCategory, excludeId]
   );
 
   const total = view.length;
@@ -204,7 +213,7 @@ export default function EpisodeListClient({
                     onClick={() => setActiveCategory(cat)}
                     className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-montserrat uppercase tracking-widest transition-colors cursor-pointer ${
                       isActive
-                        ? "bg-[var(--brand-pink)] text-white"
+                        ? "bg-[var(--brand-pink)] text-white md:bg-transparent md:text-[var(--brand-yellow)] md:underline md:underline-offset-8 md:decoration-2 md:decoration-[var(--brand-yellow)]"
                         : "border border-[rgba(250,204,21,0.15)] text-[var(--brand-yellow)]/70 hover:text-[var(--brand-yellow)]"
                     }`}
                   >
@@ -213,8 +222,8 @@ export default function EpisodeListClient({
                 );
               })}
             </div>
-            <span className="hidden md:block text-xs uppercase tracking-widest text-white/40 whitespace-nowrap">
-              {total} {total === 1 ? "episode" : "episodes"}
+            <span className="hidden md:block text-xs uppercase tracking-widest text-white/50 whitespace-nowrap">
+              {count} {count === 1 ? "episode" : "episodes"}
             </span>
           </div>
         </div>
