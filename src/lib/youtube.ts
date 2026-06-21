@@ -1,12 +1,20 @@
 // lib/youtube.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const YT_KEY = process.env.YOUTUBE_API_KEY!;
-const CHANNEL_ID = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID!;
+// Read config lazily so importing this module never throws at load time.
+// Callers that need the API guard via these helpers and surface a clear error
+// only when the API is actually used.
+function getApiKey(): string {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key) throw new Error("Missing YOUTUBE_API_KEY in env");
+  return key;
+}
 
-if (!YT_KEY) throw new Error("Missing YOUTUBE_API_KEY in env");
-if (!CHANNEL_ID)
-  throw new Error("Missing NEXT_PUBLIC_YOUTUBE_CHANNEL_ID in env");
+function getChannelId(): string {
+  const id = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
+  if (!id) throw new Error("Missing NEXT_PUBLIC_YOUTUBE_CHANNEL_ID in env");
+  return id;
+}
 
 export type YTPlaylist = {
   id: string;
@@ -71,9 +79,11 @@ export async function getChannelVideos(): Promise<
     thumbnails?: any;
     youtubeUrl: string;
   }[] = [];
+  const key = getApiKey();
+  const channelId = getChannelId();
   let pageToken = "";
   do {
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=50&type=video&order=date&key=${YT_KEY}${
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=50&type=video&order=date&key=${key}${
       pageToken ? `&pageToken=${pageToken}` : ""
     }`;
     const json = await fetchJson(url);
@@ -98,7 +108,7 @@ export async function getChannelVideos(): Promise<
  * Get playlists for the channel (public playlists).
  */
 export async function getPlaylists(): Promise<YTPlaylist[]> {
-  const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${CHANNEL_ID}&maxResults=50&key=${YT_KEY}`;
+  const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet&channelId=${getChannelId()}&maxResults=50&key=${getApiKey()}`;
   const json = await fetchJson(url);
   return (json.items || []).map((it: any) => ({
     id: it.id,
@@ -111,10 +121,11 @@ export async function getPlaylists(): Promise<YTPlaylist[]> {
  * Get items for a playlist (paginated); returns array of video ids + snippet metadata
  */
 export async function getPlaylistItems(playlistId: string): Promise<YTVideo[]> {
+  const key = getApiKey();
   const items: YTVideo[] = [];
   let pageToken = "";
   do {
-    const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${YT_KEY}${
+    const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${key}${
       pageToken ? `&pageToken=${pageToken}` : ""
     }`;
     const json = await fetchJson(url);
@@ -152,10 +163,11 @@ export async function getVideosDetails(
     chunks.push(videoIds.slice(i, i + 50));
   }
 
+  const key = getApiKey();
   for (const chunk of chunks) {
     const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${chunk.join(
       ","
-    )}&key=${YT_KEY}`;
+    )}&key=${key}`;
     const json = await fetchJson(url);
     for (const v of json.items || []) {
       const durISO = v.contentDetails?.duration;
@@ -172,6 +184,41 @@ export async function getVideosDetails(
     }
   }
   return out;
+}
+
+/**
+ * Get the full uploads catalogue for the channel, enriched with durations.
+ *
+ * Every YouTube channel has a special "uploads" playlist whose id is the
+ * channel id with the leading `UC` swapped for `UU`. Reading that playlist via
+ * playlistItems (with pagination) returns the *entire* upload history rather
+ * than the 15-item cap of the RSS feed, and costs only ~2-3 quota units per
+ * refresh (1 unit per playlistItems page + 1 per videos detail chunk).
+ */
+export async function getAllChannelUploads(): Promise<YTVideo[]> {
+  const channelId = getChannelId();
+  if (!channelId.startsWith("UC")) {
+    throw new Error(
+      `Expected a channel id starting with "UC", got "${channelId}"`
+    );
+  }
+  const uploadsPlaylistId = `UU${channelId.slice(2)}`;
+
+  const items = await getPlaylistItems(uploadsPlaylistId);
+
+  // Enrich with real durations (and richer snippet data) so callers can filter
+  // Shorts by actual length rather than guessing from titles.
+  const detailsMap = await getVideosDetails(items.map((it) => it.id));
+
+  return items.map((it) => {
+    const det = detailsMap[it.id] || {};
+    return {
+      ...it,
+      durationISO: det.durationISO ?? it.durationISO,
+      durationSeconds: det.durationSeconds ?? it.durationSeconds,
+      thumbnails: det.thumbnails ?? it.thumbnails,
+    };
+  });
 }
 
 /**
