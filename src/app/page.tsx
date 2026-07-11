@@ -5,7 +5,6 @@ import {
   SvgTiktok,
   SvgTwitter,
   SvgMail,
-  SvgApple,
   SvgSpotify,
 } from "../../public/assets/svgs";
 import heroCropped from "../../public/images/hero-cropped.jpg";
@@ -16,7 +15,7 @@ import {
   type EpisodeGroup,
   type EpisodeItem,
 } from "@/lib/episodes";
-import EpisodeListClient from "../components/EpisodeListClient";
+import EpisodesShowcase from "../components/EpisodesShowcase";
 import { ScrollToTopButton } from "../components/ScrollToTopButton";
 
 export const revalidate = 600; // cache page data for 10 minutes
@@ -134,43 +133,11 @@ export default async function Home() {
         <Nav />
       </section>
 
-      <section>
-        <div className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-          <div className=" mx-auto px-12 lg:px-24 py-10 md:py-12 my-10 md:my-12 flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-12">
-            <a
-              href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
-              target="_blank"
-              className="relative overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group"
-            >
-              <span
-                className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
-                aria-hidden
-              />
-              <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg md:text-xl text-left">
-                Listen on Spotify
-              </span>
-              <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
-            </a>
-
-            <a
-              href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
-              target="_blank"
-              className="relative overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group"
-            >
-              <span
-                className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
-                aria-hidden
-              />
-              <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg md:text-xl text-left">
-                Listen on Apple Podcasts
-              </span>
-              <SvgApple className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
-            </a>
-          </div>
-        </div>
-        <div id="episodes">
-          <EpisodeListClient excludeId={latest?.id} pageSize={4} />
-        </div>
+      <section
+        id="episodes"
+        className="border-b-2 border-[rgba(250,204,21,0.15)]"
+      >
+        <EpisodesShowcase episodes={allEpisodes} excludeId={latest?.id} />
       </section>
       <section className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
         <div className="mx-auto px-4 md:px-8 lg:px-24 py-10 md:py-12 mb-10 md:mb-12">
