@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import Image from "next/image";
 import {
   SvgArrow,
@@ -44,6 +50,29 @@ export default function EpisodeListClient({
   const [page, setPage] = useState<number>(initialPage);
   const [loading, setLoading] = useState<boolean>(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const tabContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicator, setIndicator] = useState<{ left: number; width: number }>({
+    left: 0,
+    width: 0,
+  });
+
+  const updateIndicator = useCallback(() => {
+    const key = activeCategory ?? "__all__";
+    const btn = tabRefs.current[key];
+    const container = tabContainerRef.current;
+    if (btn && container) {
+      const cRect = container.getBoundingClientRect();
+      const bRect = btn.getBoundingClientRect();
+      setIndicator({ left: bRect.left - cRect.left, width: bRect.width });
+    }
+  }, [activeCategory]);
+
+  useEffect(() => {
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [updateIndicator]);
 
   const renderDigitsWithMontItalic = (text?: string | null) => {
     if (!text) return null;
@@ -54,7 +83,7 @@ export default function EpisodeListClient({
         </span>
       ) : (
         <span key={idx}>{part}</span>
-      )
+      ),
     );
   };
 
@@ -92,7 +121,7 @@ export default function EpisodeListClient({
         } else if (Array.isArray(j.data)) {
           // flatten grouped data
           items = j.data.flatMap(
-            (g: { episodes?: EpisodeItem[] }) => g.episodes || []
+            (g: { episodes?: EpisodeItem[] }) => g.episodes || [],
           );
         } else {
           items = [];
@@ -130,7 +159,7 @@ export default function EpisodeListClient({
   // episode is categorized (e.g. RSS fallback) — the filter bar then hides.
   const categories = useMemo(() => {
     const present = new Set(
-      all.map((e) => e.category).filter(Boolean) as string[]
+      all.map((e) => e.category).filter(Boolean) as string[],
     );
     const ordered = CATEGORY_ORDER.filter((c) => present.has(c));
     const extras = [...present].filter((c) => !CATEGORY_ORDER.includes(c));
@@ -147,7 +176,7 @@ export default function EpisodeListClient({
   const inCategory = useMemo(
     () =>
       activeCategory ? all.filter((e) => e.category === activeCategory) : all,
-    [all, activeCategory]
+    [all, activeCategory],
   );
   const count = inCategory.length;
 
@@ -155,7 +184,7 @@ export default function EpisodeListClient({
   const view = useMemo(
     () =>
       excludeId ? inCategory.filter((e) => e.id !== excludeId) : inCategory,
-    [inCategory, excludeId]
+    [inCategory, excludeId],
   );
 
   const total = view.length;
@@ -181,7 +210,7 @@ export default function EpisodeListClient({
         totalPages - 3,
         totalPages - 2,
         totalPages - 1,
-        totalPages
+        totalPages,
       );
       return out;
     }
@@ -194,27 +223,37 @@ export default function EpisodeListClient({
   return (
     <div>
       {categories.length > 0 && (
-        <div className="container mx-auto px-12 lg:px-0 max-w-7xl mb-12">
-          <div className="flex items-center justify-between gap-4 border-b-2 border-[rgba(250,204,21,0.15)] pb-6">
+        <div className="container mx-auto px-12 lg:px-0 max-w-7xl mb-4 mt-10">
+          <div className="flex items-center justify-between gap-4 pb-6">
             <div
-              className="flex gap-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1"
+              ref={tabContainerRef}
+              className="relative flex gap-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1"
               role="tablist"
               aria-label="Filter episodes by category"
             >
+              {/* Sliding underline indicator */}
+              <span
+                className="hidden md:block absolute bottom-0 h-[2px] bg-[var(--brand-yellow)] transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
+                style={{ left: indicator.left, width: indicator.width }}
+              />
               {[null, ...categories].map((cat) => {
                 const isActive = activeCategory === cat;
                 const label = cat ?? "All";
+                const key = cat ?? "__all__";
                 return (
                   <button
                     key={label}
+                    ref={(el) => {
+                      tabRefs.current[key] = el;
+                    }}
                     type="button"
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => setActiveCategory(cat)}
-                    className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-montserrat uppercase tracking-widest transition-colors cursor-pointer ${
+                    className={`whitespace-nowrap px-5 py-2 text-sm font-montserrat uppercase tracking-widest transition-colors cursor-pointer ${
                       isActive
-                        ? "bg-[var(--brand-pink)] text-white md:bg-transparent md:text-[var(--brand-yellow)] md:underline md:underline-offset-8 md:decoration-2 md:decoration-[var(--brand-yellow)]"
-                        : "border border-[rgba(250,204,21,0.15)] text-[var(--brand-yellow)]/70 hover:text-[var(--brand-yellow)]"
+                        ? "bg-[var(--brand-pink)] text-white md:bg-transparent md:text-[var(--brand-yellow)]"
+                        : "text-[var(--brand-yellow)]/70 hover:text-[var(--brand-yellow)]"
                     }`}
                   >
                     {label}
@@ -235,7 +274,7 @@ export default function EpisodeListClient({
         {visible.map((episode) => (
           <div
             key={episode.id}
-            className="container mx-auto px-12 lg:px-0 py-12 mb-20 border-t-2 border-[rgba(250,204,21,0.15)] max-w-7xl"
+            className="container mx-auto px-12 lg:px-0 py-12 mb-20 border-t border-[rgba(250,204,21,0.15)] max-w-7xl"
           >
             <div className="mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-12 md:gap-8 items-center">
@@ -250,7 +289,7 @@ export default function EpisodeListClient({
                     />
                   </div>
                 </div>
-                <div className="md:col-span-8 text-center md:text-left  text-white">
+                <div className="md:col-span-8 text-center md:text-left text-white">
                   <div className="text-sm uppercase tracking-widest text-[var(--brand-yellow)] mb-6">
                     <span>EPISODE&nbsp;</span>
                     <span className="font-montserrat italic">
@@ -369,7 +408,7 @@ export default function EpisodeListClient({
               >
                 {it}
               </button>
-            )
+            ),
           )}
         </nav>
 
