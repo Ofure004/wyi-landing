@@ -54,7 +54,7 @@ export default async function Home() {
         </span>
       ) : (
         <span key={idx}>{part}</span>
-      )
+      ),
     );
 
   return (
@@ -99,7 +99,7 @@ export default async function Home() {
                 <a
                   href={latest.spotify?.spotifyUrl ?? latest.youtubeUrl}
                   target="_blank"
-                  className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border-2 border-white hover:border-none group"
+                  className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border-2 border-white hover:border-none group group/btn"
                 >
                   <span
                     className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
@@ -108,7 +108,8 @@ export default async function Home() {
                   <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
                     Listen
                   </span>
-                  <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
+                  <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover/btn:text-black" />
+                  {/* <SvgSpotify className="h-4 w-4 text-white transition-colors duration-200 group-hover/btn:text-black" /> */}
                 </a>
 
                 <a

@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { SvgSpotify, SvgApple, SvgArrow } from "../../public/assets/svgs";
 import type { EpisodeItem } from "@/lib/episodes";
+import { formatDate } from "@/lib/helpers";
 
 type Props = {
   episodes: EpisodeItem[];
@@ -56,13 +57,13 @@ export default function EpisodesShowcase({ episodes, excludeId }: Props) {
   // The rendered list excludes the featured episode shown in the hero.
   const visible = useMemo(
     () => (excludeId ? sorted.filter((e) => e.id !== excludeId) : sorted),
-    [sorted, excludeId]
+    [sorted, excludeId],
   );
 
   // Categories actually present in the data, in preferred order.
   const categories = useMemo(() => {
     const present = new Set(
-      visible.map((e) => e.category).filter(Boolean) as string[]
+      visible.map((e) => e.category).filter(Boolean) as string[],
     );
     const ordered = CATEGORY_ORDER.filter((c) => present.has(c));
     const extras = [...present].filter((c) => !CATEGORY_ORDER.includes(c));
@@ -73,7 +74,7 @@ export default function EpisodesShowcase({ episodes, excludeId }: Props) {
   // category fall into an "Other" group so nothing silently disappears.
   const groups = useMemo(() => {
     const shown = categories.filter(
-      (c) => !activeCategory || c === activeCategory
+      (c) => !activeCategory || c === activeCategory,
     );
     return shown
       .map((category) => ({
@@ -86,7 +87,7 @@ export default function EpisodesShowcase({ episodes, excludeId }: Props) {
   return (
     <section className="bg-black text-white">
       {/* Our Focus — intro statement */}
-      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16 pt-20 md:pt-28 pb-10 md:pb-16">
+      <div className="mx-auto px-6 md:px-10 lg:px-12 pt-20 md:pt-28 pb-10 md:pb-16">
         <p className="text-sm font-montserrat uppercase tracking-[0.25em] text-[var(--brand-yellow)] mb-6">
           Our Focus
         </p>
@@ -97,7 +98,7 @@ export default function EpisodesShowcase({ episodes, excludeId }: Props) {
       </div>
 
       {/* Episodes header + category filter pills */}
-      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16 pb-8">
+      <div className="mx-auto px-6 md:px-12 lg:px-16 pb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
           <h3 className="font-charleville text-4xl md:text-5xl font-bold text-[#f4ecd6]">
             Episodes
@@ -134,7 +135,7 @@ export default function EpisodesShowcase({ episodes, excludeId }: Props) {
       </div>
 
       {/* Category groups */}
-      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16 pb-20 md:pb-28">
+      <div className="mx-auto px-6 md:px-12 lg:px-16 pb-20 md:pb-28">
         {groups.length === 0 && (
           <p className="text-white/50 py-10">No episodes to show yet.</p>
         )}
@@ -225,8 +226,9 @@ function EpisodeCard({
           className="text-xs font-montserrat font-semibold uppercase tracking-wider mb-2"
           style={{ color: accent }}
         >
-          {number ? `EP. ${number}` : "EPISODE"}
-          {episode.category ? ` · ${episode.category}` : ""}
+          {/* {number ? `EP. ${number}` : "EPISODE"} */}
+          {/* {episode.category ? ` · ${episode.category}` : ""} */}
+          <span>{formatDate(episode.publishedAt)}</span>
         </p>
 
         <h5 className="font-charleville text-xl leading-snug text-[#f4ecd6]">
@@ -244,20 +246,27 @@ function EpisodeCard({
           <IconLink
             href={spotifyUrl}
             label={`Listen to ${episode.title} on Spotify`}
+            // className="flex items-center gap-2 px-3"
           >
             <SvgSpotify className="h-4 w-4 text-white transition-colors duration-200 group-hover/btn:text-black" />
+            {/* <span className="ml-2 text-white transition-colors duration-200 group-hover/btn:text-black text-xs font-semibold">
+              Spotify
+            </span> */}
           </IconLink>
-          <IconLink
-            href={APPLE_PODCAST_URL}
-            label="Listen on Apple Podcasts"
-          >
-            <SvgApple className="h-5 w-5 text-white transition-colors duration-200 group-hover/btn:text-black" />
+          <IconLink href={APPLE_PODCAST_URL} label="Listen on Apple Podcasts">
+            <SvgApple className="h-6 w-6 text-white transition-colors duration-200 group-hover/btn:text-black" />
+            {/* <span className="ml-2 text-white transition-colors duration-200 group-hover/btn:text-black text-xs font-semibold">
+              Apple Podcasts
+            </span> */}
           </IconLink>
           <IconLink
             href={episode.youtubeUrl}
             label={`Watch ${episode.title} on YouTube`}
           >
-            <SvgArrow className="h-4 w-4 text-white transition-colors duration-200 group-hover/btn:text-black" />
+            <span className="mr-2 text-white transition-colors duration-200 group-hover/btn:text-black font-semibold text-xs">
+              Watch
+            </span>
+            <SvgArrow className="mt-2 h-8 w-8 text-white transition-colors duration-200 group-hover/btn:text-black" />
           </IconLink>
         </div>
       </div>
@@ -280,7 +289,7 @@ function IconLink({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="group/btn relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg border border-white/15 transition-colors hover:border-transparent"
+      className="group/btn relative flex h-10 w-auto py-2 px-6 items-center justify-center border border-white/15 overflow-hidden rounded-lg transition-colors hover:border-transparent"
     >
       <span
         className="absolute inset-0 scale-0 rounded-lg bg-[var(--brand-yellow)] transition-transform duration-300 group-hover/btn:scale-100"

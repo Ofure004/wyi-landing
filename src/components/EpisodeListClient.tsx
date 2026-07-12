@@ -16,6 +16,7 @@ import {
   SvgApple,
 } from "../../public/assets/svgs";
 import type { EpisodeItem } from "@/lib/episodes";
+import { formatDate } from "@/lib/helpers";
 
 type Props = {
   excludeId?: string | null;
@@ -85,22 +86,6 @@ export default function EpisodeListClient({
         <span key={idx}>{part}</span>
       ),
     );
-  };
-
-  const formatDate = (iso?: string) => {
-    if (!iso) return "";
-    try {
-      const d = new Date(iso);
-      return d
-        .toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-        .toUpperCase();
-    } catch {
-      return iso ?? "";
-    }
   };
 
   useEffect(() => {
