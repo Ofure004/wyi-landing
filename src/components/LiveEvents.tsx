@@ -88,9 +88,10 @@ export default function LiveEvents() {
               )}
               <Link
                 href="/live"
-                className="ml-auto text-sm font-montserrat font-semibold text-[var(--brand-yellow)] underline-offset-4 hover:underline"
+                className="nav-link nav-link--yellow ml-auto text-sm font-montserrat font-semibold text-[var(--brand-yellow)]"
+                data-replace="See all live events →"
               >
-                See all live events →
+                <span>See all live events →</span>
               </Link>
             </div>
           </div>

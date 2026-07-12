@@ -145,50 +145,14 @@ export default async function Home() {
       {/* Watts Your Impact Live */}
       <LiveEvents />
 
-      {/* Never miss a conversation — listen CTA */}
-      <section className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-        <div className="mx-auto max-w-3xl px-4 md:px-8 py-16 md:py-24 flex flex-col items-center text-center">
-          <p className="text-sm font-montserrat font-semibold uppercase tracking-[0.25em] text-[var(--brand-yellow)] mb-4">
-            Join 500+ listeners
-          </p>
-          <h2 className="font-charleville text-4xl sm:text-5xl md:text-6xl font-bold text-[#f4ecd6]">
-            Never miss a conversation.
-          </h2>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
-              target="_blank"
-              className="rounded-xl bg-[var(--brand-yellow)] px-6 py-3 font-montserrat font-bold text-black shadow-lg transition-transform hover:scale-[1.03]"
-            >
-              Spotify
-            </a>
-            <a
-              href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
-              target="_blank"
-              className="rounded-xl border border-white/15 bg-white/[0.03] px-6 py-3 font-montserrat font-bold text-white transition-colors hover:border-white/30 hover:bg-white/[0.06]"
-            >
-              Apple Podcasts
-            </a>
-            <a
-              href="https://www.youtube.com/@wattsyourimpact"
-              target="_blank"
-              className="rounded-xl border border-white/15 bg-white/[0.03] px-6 py-3 font-montserrat font-bold text-white transition-colors hover:border-white/30 hover:bg-white/[0.06]"
-            >
-              YouTube
-            </a>
-          </div>
-        </div>
-      </section>
-      <section
-        id="contact"
-        className="border-b-2 border-[rgba(250,204,21,0.15)]"
-      >
-        <div className="mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-12">
-          <p className="max-w-7xl text-4xl sm:text-5xl md:text-6xl italic font-bold text-center">
-            What&apos;s <br className="hidden sm:block" /> your impact?
-          </p>
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-base sm:text-lg font-medium tracking-wide max-w-xl text-center">
+      <section id="contact" className="w-full">
+        <div className="mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-center w-full gap-12 md:gap-16">
+          {/* What's your impact? */}
+          <div className="flex flex-col items-center gap-4 md:flex-1">
+            <p className="text-4xl sm:text-5xl md:text-6xl italic font-bold text-center font-charleville">
+              What&apos;s your impact?
+            </p>
+            <p className="text-base sm:text-base font-medium tracking-wide max-w-xl text-center">
               Everyone has the power to make an impact. Want to share how
               you&apos;re creating change — in your community, your career, or
               your own small way? Send us a mail, Let&apos;s talk about it!
@@ -201,6 +165,57 @@ export default async function Home() {
                 Send us a mail
               </p>
             </a>
+          </div>
+
+          {/* Never miss a conversation */}
+          <div className="flex flex-col items-center text-center md:flex-1">
+            <h2 className="font-charleville text-4xl sm:text-5xl md:text-6xl font-bold text-[#f4ecd6]">
+              Never miss a conversation.
+            </h2>
+            <p className="text-base sm:text-base font-medium tracking-wide max-w-xl text-center mt-4">
+              Check out our podcast on your favorite platform.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
+                target="_blank"
+                className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border border-white/30 hover:border-none group"
+              >
+                <span
+                  className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
+                  aria-hidden
+                />
+                <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
+                  Spotify
+                </span>
+              </a>
+              <a
+                href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
+                target="_blank"
+                className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border border-white/30 hover:border-none group"
+              >
+                <span
+                  className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
+                  aria-hidden
+                />
+                <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
+                  Apple Podcasts
+                </span>
+              </a>
+              <a
+                href="https://www.youtube.com/@wattsyourimpact"
+                target="_blank"
+                className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border border-white/30 hover:border-none group"
+              >
+                <span
+                  className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
+                  aria-hidden
+                />
+                <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
+                  YouTube
+                </span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
