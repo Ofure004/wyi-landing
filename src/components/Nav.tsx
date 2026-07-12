@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import logo from "../../public/images/logo.svg";
 
@@ -12,8 +13,8 @@ export function Nav() {
     <nav className="fixed inset-x-0 top-0 z-30 font-charleville">
       <div className="max-w-6xl mx-auto px-4">
         <div className="relative h-16 md:h-20 flex items-center justify-between rounded-b-2xl bg-black/20 backdrop-blur-sm border-b border-white/10">
-          <a
-            href="#home"
+          <Link
+            href="/"
             className="flex items-center gap-2 px-2 md:px-3 w-14 h-14 md:w-18 md:h-18"
           >
             <Image
@@ -23,24 +24,25 @@ export function Nav() {
               height={40}
               className="w-full h-full object-contain"
             />
-          </a>
+          </Link>
           {/* Desktop / tablet nav */}
           <div className="hidden sm:flex items-center gap-4 md:gap-8 lg:gap-12 px-2 text-xl md:text-2xl lg:text-3xl text-white w-full justify-center">
             {[
-              { id: "home", label: "Home" },
-              { id: "episodes", label: "Episodes" },
-              { id: "contact", label: "Contact" },
+              { id: "home", label: "Home", href: "/" },
+              { id: "episodes", label: "Episodes", href: "/#episodes" },
+              { id: "live", label: "Live", href: "/live" },
+              { id: "contact", label: "Contact", href: "/#contact" },
             ].map((item) => (
-              <a
+              <Link
                 key={item.id}
-                href={`#${item.id}`}
+                href={item.href}
                 onClick={() => setActiveId(item.id)}
                 className={`nav-link ${activeId === item.id ? "active" : ""}`}
                 data-replace={item.label}
                 aria-current={activeId === item.id ? "page" : undefined}
               >
                 <span>{item.label}</span>
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -77,13 +79,14 @@ export function Nav() {
             <div className="absolute inset-x-2 top-full mt-2 rounded-2xl bg-black/90 border border-white/15 shadow-lg sm:hidden">
               <nav className="flex flex-col py-2 px-3 text-base text-white">
                 {[
-                  { id: "home", label: "Home" },
-                  { id: "episodes", label: "Episodes" },
-                  { id: "contact", label: "Contact" },
+                  { id: "home", label: "Home", href: "/" },
+                  { id: "episodes", label: "Episodes", href: "/#episodes" },
+                  { id: "live", label: "Live", href: "/live" },
+                  { id: "contact", label: "Contact", href: "/#contact" },
                 ].map((item) => (
-                  <a
+                  <Link
                     key={item.id}
-                    href={`#${item.id}`}
+                    href={item.href}
                     onClick={() => {
                       setActiveId(item.id);
                       setIsOpen(false);
@@ -95,7 +98,7 @@ export function Nav() {
                     }`}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
               </nav>
             </div>

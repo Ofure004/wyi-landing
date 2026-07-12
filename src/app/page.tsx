@@ -16,6 +16,7 @@ import {
   type EpisodeItem,
 } from "@/lib/episodes";
 import EpisodesShowcase from "../components/EpisodesShowcase";
+import LiveEvents from "../components/LiveEvents";
 import { ScrollToTopButton } from "../components/ScrollToTopButton";
 
 export const revalidate = 600; // cache page data for 10 minutes
@@ -140,39 +141,42 @@ export default async function Home() {
       >
         <EpisodesShowcase episodes={allEpisodes} excludeId={latest?.id} />
       </section>
+
+      {/* Watts Your Impact Live */}
+      <LiveEvents />
+
+      {/* Never miss a conversation — listen CTA */}
       <section className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-        <div className="mx-auto px-4 md:px-8 lg:px-24 py-10 md:py-12 mb-10 md:mb-12">
-          <h2 className="text-[var(--brand-yellow)] font-semibold font-charleville text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-            Stay posted on the latest podcast episodes.
+        <div className="mx-auto max-w-3xl px-4 md:px-8 py-16 md:py-24 flex flex-col items-center text-center">
+          <p className="text-sm font-montserrat font-semibold uppercase tracking-[0.25em] text-[var(--brand-yellow)] mb-4">
+            Join 500+ listeners
+          </p>
+          <h2 className="font-charleville text-4xl sm:text-5xl md:text-6xl font-bold text-[#f4ecd6]">
+            Never miss a conversation.
           </h2>
-          <p className="text-[var(--brand-yellow)] font-charleville mt-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl">
-            Listen on{" "}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a
               href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
               target="_blank"
-              className="text-[var(--brand-orange)] underline"
+              className="rounded-xl bg-[var(--brand-yellow)] px-6 py-3 font-montserrat font-bold text-black shadow-lg transition-transform hover:scale-[1.03]"
             >
               Spotify
-            </a>{" "}
-            or{" "}
+            </a>
             <a
               href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
               target="_blank"
-              className="text-[var(--brand-orange)] underline"
+              className="rounded-xl border border-white/15 bg-white/[0.03] px-6 py-3 font-montserrat font-bold text-white transition-colors hover:border-white/30 hover:bg-white/[0.06]"
             >
               Apple Podcasts
             </a>
-          </p>
-          <p className="text-[var(--brand-yellow)] font-charleville mt-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl">
-            Don&apos;t forget to subscribe to our{" "}
             <a
               href="https://www.youtube.com/@wattsyourimpact"
               target="_blank"
-              className="text-[var(--brand-orange)] underline"
+              className="rounded-xl border border-white/15 bg-white/[0.03] px-6 py-3 font-montserrat font-bold text-white transition-colors hover:border-white/30 hover:bg-white/[0.06]"
             >
               YouTube
             </a>
-          </p>
+          </div>
         </div>
       </section>
       <section
