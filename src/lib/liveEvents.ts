@@ -1,5 +1,8 @@
-// Placeholder / dummy data for Watts Your Impact Live events.
-// Replace with real event data (or a CMS/API source) when available.
+// Live-events data for Watts Your Impact Live.
+//
+// The upcoming event is drawn from the WYI Live concept brief; past editions
+// use placeholder data until real recaps are available. Swap for a CMS/API
+// source when ready.
 
 export type LiveSession = {
   id: string;
@@ -13,19 +16,29 @@ export type LiveSession = {
   videoUrl?: string;
 };
 
+/** A headline stat shown on the upcoming-event card. */
+export type LiveHighlight = {
+  value: string;
+  label: string;
+};
+
 export type LiveEvent = {
   id: string;
   /** Short label, e.g. "Vol. 1". */
   volume: string;
   title: string;
   tagline: string;
-  /** Human-readable date, e.g. "March 2026". */
+  /** Human-readable date, e.g. "March 2026" or "Coming 2026". */
   date: string;
   location: string;
   status: "past" | "upcoming";
   attendees?: number;
   speakerCount?: number;
   registerUrl?: string;
+  /** Headline stats for the upcoming-event card. */
+  highlights?: LiveHighlight[];
+  /** Discussion areas / themes for the upcoming event. */
+  topics?: string[];
   sessions: LiveSession[];
 };
 
@@ -33,20 +46,35 @@ export const liveEvents: LiveEvent[] = [
   {
     id: "vol-2",
     volume: "Vol. 2",
-    title: "Financing the transition",
+    title: "The People Powering Africa's Energy Future",
     tagline:
-      "Capital, policy and the people closing Africa's energy access gap.",
-    date: "Q4 2026",
-    location: "Lagos",
+      "A live podcast experience bringing 4–5 of the energy sector's most influential voices together for one moderated, unfiltered conversation — professionally recorded and livestreamed for the room and the world.",
+    date: "Coming 2026",
+    location: "Lagos, Nigeria",
     status: "upcoming",
-    speakerCount: 6,
-    registerUrl: "#register",
+    speakerCount: 5,
+    registerUrl:
+      "mailto:info@wattsyourimpact.com?subject=Watts%20Your%20Impact%20Live%20%E2%80%94%20Register%20interest",
+    highlights: [
+      { value: "4–5", label: "Energy leaders across the value chain" },
+      { value: "50–100", label: "Guests live in the room" },
+      { value: "Live + Streamed", label: "Join in person or online" },
+    ],
+    topics: [
+      "Leadership in energy",
+      "Career journeys",
+      "Energy access & infrastructure",
+      "Renewables & sustainability",
+      "Innovation & technology",
+      "Investment & financing",
+      "Talent & workforce",
+    ],
     sessions: [],
   },
   {
     id: "vol-1",
     volume: "Vol. 1",
-    title: "The people powering Africa's energy future — live, in one room.",
+    title: "Inside Africa's energy transition — live, in one room.",
     tagline:
       "80 attendees. 5 leaders across the value chain. One unfiltered conversation — watch it back, session by session.",
     date: "March 2026",
@@ -113,7 +141,9 @@ export const liveEvents: LiveEvent[] = [
   },
 ];
 
-export const featuredRecap =
-  liveEvents.find((e) => e.status === "past") ?? liveEvents[0];
-
 export const nextEvent = liveEvents.find((e) => e.status === "upcoming");
+
+export const pastEvents = liveEvents.filter((e) => e.status === "past");
+
+/** Most recent past edition — used where a single recap is needed. */
+export const featuredRecap = pastEvents[0] ?? liveEvents[0];

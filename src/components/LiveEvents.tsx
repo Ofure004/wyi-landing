@@ -1,38 +1,30 @@
 import Link from "next/link";
-import { featuredRecap, nextEvent, type LiveSession } from "@/lib/liveEvents";
+import { nextEvent, featuredRecap, type LiveHighlight } from "@/lib/liveEvents";
 
-// Diagonal-stripe placeholder used until real session thumbnails exist.
+// Diagonal-stripe placeholder, matching the live session tiles elsewhere.
 const STRIPES =
   "repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 12px, rgba(255,255,255,0.06) 12px 24px)";
 
-function PlayIcon({ className = "" }: { className?: string }) {
+function HighlightTile({ item }: { item: LiveHighlight }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
-      <path d="M8 5.14v13.72c0 .83.91 1.33 1.61.89l10.79-6.86a1.05 1.05 0 0 0 0-1.78L9.61 4.25A1.05 1.05 0 0 0 8 5.14Z" />
-    </svg>
-  );
-}
-
-function SessionCard({ session }: { session: LiveSession }) {
-  return (
-    <Link
-      href={session.videoUrl ?? "/live"}
-      className="group relative flex aspect-video items-center justify-center overflow-hidden rounded-2xl border border-white/10 transition-colors hover:border-white/25"
-      aria-label={`Watch session ${session.number}: ${session.title}`}
-    >
+    <div className="relative flex min-h-[150px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 p-6">
       <span className="absolute inset-0" style={{ backgroundImage: STRIPES }} aria-hidden />
-      <span className="absolute left-4 top-4 text-xs font-montserrat font-semibold uppercase tracking-wider text-[var(--brand-yellow)]">
-        Session {String(session.number).padStart(2, "0")}
-      </span>
-      <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-yellow)] text-black shadow-lg transition-transform duration-300 group-hover:scale-110">
-        <PlayIcon className="h-5 w-5 translate-x-[1px]" />
-      </span>
-    </Link>
+      <div className="relative">
+        <div className="font-montserrat font-bold text-2xl md:text-3xl text-[#f4ecd6]">
+          {item.value}
+        </div>
+        <div className="mt-1 font-montserrat text-sm text-white/55">
+          {item.label}
+        </div>
+      </div>
+    </div>
   );
 }
 
 export default function LiveEvents() {
-  const recap = featuredRecap;
+  // Feature the next/upcoming event; fall back to the latest recap if none.
+  const event = nextEvent ?? featuredRecap;
+  const isUpcoming = event.status === "upcoming";
 
   return (
     <section id="live" className="bg-black text-white">
@@ -50,48 +42,61 @@ export default function LiveEvents() {
               <span className="text-sm font-montserrat font-semibold uppercase tracking-[0.2em] text-[var(--brand-yellow)]">
                 Watts Your Impact Live
               </span>
-              <span className="rounded-full border border-[var(--brand-yellow)]/50 px-3 py-1 text-xs font-montserrat font-semibold uppercase tracking-wider text-[var(--brand-yellow)]">
-                Recap · {recap.volume}
+              <span className="inline-flex items-center gap-2 rounded-full border border-[var(--brand-yellow)]/50 px-3 py-1 text-xs font-montserrat font-semibold uppercase tracking-wider text-[var(--brand-yellow)]">
+                {isUpcoming && (
+                  <span className="h-2 w-2 rounded-full bg-[var(--brand-yellow)]" />
+                )}
+                {isUpcoming ? "Up Next" : "Recap"} · {event.volume}
               </span>
             </div>
 
             <h2 className="font-charleville text-[clamp(1.9rem,4.5vw,3.25rem)] leading-[1.1] text-[#f4ecd6] max-w-3xl">
-              {recap.title}
+              {event.title}
             </h2>
             <p className="mt-5 max-w-2xl text-base md:text-lg text-white/55 font-montserrat">
-              {recap.tagline}
+              {event.tagline}
             </p>
 
-            {/* Session recordings */}
-            {recap.sessions.length > 0 && (
-              <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
-                {recap.sessions.map((s) => (
-                  <SessionCard key={s.id} session={s} />
+            {/* Discussion topics */}
+            {event.topics && event.topics.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                {event.topics.slice(0, 5).map((topic) => (
+                  <span
+                    key={topic}
+                    className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-montserrat text-white/60"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Highlight stats */}
+            {event.highlights && event.highlights.length > 0 && (
+              <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {event.highlights.map((h) => (
+                  <HighlightTile key={h.label} item={h} />
                 ))}
               </div>
             )}
 
             {/* CTA row */}
             <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <Link
-                href="/live"
+              <a
+                href={event.registerUrl ?? "mailto:info@wattsyourimpact.com"}
                 className="group relative inline-flex items-center overflow-hidden rounded-xl bg-[var(--brand-yellow)] px-7 py-3.5 font-montserrat font-bold text-black shadow-lg transition-transform hover:scale-[1.02]"
               >
-                {nextEvent
-                  ? `Register for ${nextEvent.volume}`
-                  : "Explore live events"}
-              </Link>
-              {nextEvent && (
-                <span className="text-sm font-montserrat uppercase tracking-wider text-white/50">
-                  {nextEvent.location} · {nextEvent.date}
-                </span>
-              )}
+                Register your interest
+              </a>
+              <span className="text-sm font-montserrat uppercase tracking-wider text-white/50">
+                {event.location} · {event.date}
+              </span>
               <Link
                 href="/live"
                 className="nav-link nav-link--yellow ml-auto text-sm font-montserrat font-semibold text-[var(--brand-yellow)]"
-                data-replace="See all live events →"
+                data-replace="See past live events →"
               >
-                <span>See all live events →</span>
+                <span>See past live events →</span>
               </Link>
             </div>
           </div>
