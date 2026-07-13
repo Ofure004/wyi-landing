@@ -74,7 +74,7 @@ export const liveEvents: LiveEvent[] = [
   {
     id: "vol-1",
     volume: "Vol. 1",
-    title: "Inside Africa's energy transition — live, in one room.",
+    title: "Power Circle.",
     tagline:
       "80 attendees. 5 leaders across the value chain. One unfiltered conversation — watch it back, session by session.",
     date: "March 2026",
@@ -106,36 +106,6 @@ export const liveEvents: LiveEvent[] = [
         speaker: "Zainab Musa",
         role: "Director, Energy Skills Africa",
         duration: "28:33",
-      },
-    ],
-  },
-  {
-    id: "vol-0",
-    volume: "Vol. 0",
-    title: "Why we went live",
-    tagline:
-      "The pilot conversation that started it all — 40 people, one long night of honesty.",
-    date: "October 2025",
-    location: "Abuja",
-    status: "past",
-    attendees: 40,
-    speakerCount: 3,
-    sessions: [
-      {
-        id: "vol-0-s1",
-        number: 1,
-        title: "From podcast to stage",
-        speaker: "The WYi Team",
-        role: "Watts Your Impact",
-        duration: "19:52",
-      },
-      {
-        id: "vol-0-s2",
-        number: 2,
-        title: "What the room taught us",
-        speaker: "Guest Panel",
-        role: "Founders & operators",
-        duration: "22:04",
       },
     ],
   },

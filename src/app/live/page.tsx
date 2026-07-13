@@ -21,7 +21,12 @@ const STRIPES =
 
 function PlayIcon({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+    >
       <path d="M8 5.14v13.72c0 .83.91 1.33 1.61.89l10.79-6.86a1.05 1.05 0 0 0 0-1.78L9.61 4.25A1.05 1.05 0 0 0 8 5.14Z" />
     </svg>
   );
@@ -48,7 +53,11 @@ function SessionCard({ session }: { session: LiveSession }) {
         className="relative flex aspect-video items-center justify-center overflow-hidden"
         aria-label={`Watch session ${session.number}: ${session.title}`}
       >
-        <span className="absolute inset-0" style={{ backgroundImage: STRIPES }} aria-hidden />
+        <span
+          className="absolute inset-0"
+          style={{ backgroundImage: STRIPES }}
+          aria-hidden
+        />
         <span className="absolute left-4 top-4 text-xs font-montserrat font-semibold uppercase tracking-wider text-[var(--brand-yellow)]">
           Session {String(session.number).padStart(2, "0")}
         </span>
@@ -125,9 +134,9 @@ export default function LivePage() {
           next one.
         </p>
         <div className="mt-10 flex flex-wrap gap-10 sm:gap-14">
-          <Stat value="3" label="Editions" />
-          <Stat value="120+" label="Attendees" />
-          <Stat value="13" label="Speakers" />
+          <Stat value="2" label="Editions" />
+          <Stat value="30+" label="Attendees" />
+          {/* <Stat value="13" label="Speakers" /> */}
         </div>
       </header>
 
@@ -169,7 +178,9 @@ export default function LivePage() {
               </div>
               <div className="shrink-0">
                 <a
-                  href={nextEvent.registerUrl ?? "mailto:info@wattsyourimpact.com"}
+                  href={
+                    nextEvent.registerUrl ?? "mailto:info@wattsyourimpact.com"
+                  }
                   className="inline-flex items-center justify-center rounded-xl bg-[var(--brand-yellow)] px-8 py-4 font-montserrat font-bold text-black shadow-lg transition-transform hover:scale-[1.02]"
                 >
                   Register your interest
