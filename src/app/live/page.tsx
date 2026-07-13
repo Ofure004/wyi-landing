@@ -82,9 +82,13 @@ function SessionCard({ session }: { session: LiveSession }) {
 }
 
 function PastEdition({ event }: { event: LiveEvent }) {
+  const meta = [event.location, event.date, event.audience]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <div className="border-t border-white/10 pt-12">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div>
           <span className="text-sm font-montserrat font-semibold uppercase tracking-[0.2em] text-[var(--brand-yellow)]">
             {event.volume}
@@ -92,14 +96,52 @@ function PastEdition({ event }: { event: LiveEvent }) {
           <h3 className="mt-3 font-charleville text-3xl md:text-4xl leading-tight text-[#f4ecd6] max-w-3xl">
             {event.title}
           </h3>
-          <p className="mt-3 max-w-2xl font-montserrat text-white/55">
+          {event.subtitle && (
+            <p className="mt-2 font-montserrat text-sm uppercase tracking-wider text-white/45">
+              {event.subtitle}
+            </p>
+          )}
+          <p className="mt-4 max-w-2xl font-montserrat text-white/55">
             {event.tagline}
           </p>
         </div>
         <div className="shrink-0 text-sm font-montserrat uppercase tracking-wider text-white/50">
-          {event.location} · {event.date}
+          {meta}
         </div>
       </div>
+
+      {event.question && (
+        <blockquote className="mt-8 border-l-2 border-[var(--brand-yellow)] pl-5">
+          <p className="font-charleville text-2xl md:text-3xl text-[#f4ecd6]">
+            &ldquo;{event.question}&rdquo;
+          </p>
+          <p className="mt-2 font-montserrat text-xs uppercase tracking-widest text-white/40">
+            The question the room came for
+          </p>
+        </blockquote>
+      )}
+
+      {event.topics && event.topics.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-3 font-montserrat text-xs uppercase tracking-widest text-white/40">
+            What we explored
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {event.topics.map((topic) => (
+              <span
+                key={topic}
+                className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-montserrat text-white/60"
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {event.host && (
+        <p className="mt-6 font-montserrat text-sm text-white/50">{event.host}</p>
+      )}
 
       {event.sessions.length > 0 && (
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

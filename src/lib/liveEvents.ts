@@ -27,6 +27,8 @@ export type LiveEvent = {
   /** Short label, e.g. "Vol. 1". */
   volume: string;
   title: string;
+  /** Edition subtitle, e.g. "First Edition · Landing Global Roles". */
+  subtitle?: string;
   tagline: string;
   /** Human-readable date, e.g. "March 2026" or "Coming 2026". */
   date: string;
@@ -34,10 +36,16 @@ export type LiveEvent = {
   status: "past" | "upcoming";
   attendees?: number;
   speakerCount?: number;
+  /** Short audience descriptor, e.g. "20–25 women". */
+  audience?: string;
+  /** A single question the edition was built around. */
+  question?: string;
+  /** Host / convenor credit line. */
+  host?: string;
   registerUrl?: string;
   /** Headline stats for the upcoming-event card. */
   highlights?: LiveHighlight[];
-  /** Discussion areas / themes for the upcoming event. */
+  /** Discussion areas / themes explored at the event. */
   topics?: string[];
   sessions: LiveSession[];
 };
@@ -74,40 +82,26 @@ export const liveEvents: LiveEvent[] = [
   {
     id: "vol-1",
     volume: "Vol. 1",
-    title: "Power Circle.",
+    title: "Power Circle",
+    subtitle: "First Edition · Landing Global Roles — What It Actually Takes",
     tagline:
-      "80 attendees. 5 leaders across the value chain. One unfiltered conversation — watch it back, session by session.",
-    date: "March 2026",
+      "An intimate, invite-only gathering for mid-career women in energy. One senior executive, one room, and a 60-minute fireside on what it actually takes to build a global career — no panels, no keynotes, just honesty.",
+    question: "How do you actually land a global role?",
+    host: "Hosted by Tosin George · Founder, EnergyHaus",
+    date: "June 2025",
     location: "Lagos",
     status: "past",
-    attendees: 80,
-    speakerCount: 5,
-    sessions: [
-      {
-        id: "vol-1-s1",
-        number: 1,
-        title: "Who actually builds the grid",
-        speaker: "Amara Okafor",
-        role: "Head of Distribution, PowerLink NG",
-        duration: "24:10",
-      },
-      {
-        id: "vol-1-s2",
-        number: 2,
-        title: "Solar at scale — the messy middle",
-        speaker: "Tunde Bakare",
-        role: "Founder, SunReach",
-        duration: "31:47",
-      },
-      {
-        id: "vol-1-s3",
-        number: 3,
-        title: "The talent pipeline nobody funds",
-        speaker: "Zainab Musa",
-        role: "Director, Energy Skills Africa",
-        duration: "28:33",
-      },
+    attendees: 25,
+    audience: "20–25 women",
+    speakerCount: 1,
+    topics: [
+      "Your journey",
+      "Visibility & credibility",
+      "The personal cost of ambition",
+      "Being an African woman in global spaces",
+      "What the landscape looks like now",
     ],
+    sessions: [],
   },
 ];
 
