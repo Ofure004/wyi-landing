@@ -107,7 +107,7 @@ export const liveEvents: LiveEvent[] = [
     tagline:
       "An intimate, invite-only gathering for mid-career women in energy. One senior executive, one room, and a 60-minute fireside on what it actually takes to build a global career — no panels, no keynotes, just honesty.",
     question: "How do you actually land a global role?",
-    host: "Hosted by Tosin George · Founder, EnergyHaus",
+    host: "An EnergyHaus × Watts Your Impact collaboration · Hosted by Tosin George, Founder, EnergyHaus",
     date: "June 2025",
     location: "Lagos",
     status: "past",
