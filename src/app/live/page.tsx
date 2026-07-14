@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "../../components/Nav";
 import { ScrollToTopButton } from "../../components/ScrollToTopButton";
+import RecapVideos from "../../components/RecapVideos";
 import {
   liveEvents,
   nextEvent,
-  drivePreviewUrl,
   driveImageUrl,
   type LiveEvent,
-  type LiveSession,
 } from "@/lib/liveEvents";
 
 export const metadata: Metadata = {
@@ -28,40 +27,6 @@ function Stat({ value, label }: { value: string; label: string }) {
         {label}
       </div>
     </div>
-  );
-}
-
-function RecordingCard({ session }: { session: LiveSession }) {
-  const src = session.videoUrl ? drivePreviewUrl(session.videoUrl) : null;
-  return (
-    <figure className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
-      <div className="relative aspect-video bg-black">
-        {src ? (
-          <iframe
-            src={src}
-            title={session.title}
-            loading="lazy"
-            allow="autoplay; encrypted-media; fullscreen"
-            allowFullScreen
-            className="absolute inset-0 h-full w-full"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-xs uppercase tracking-[0.3em] text-white/30">
-            Recording soon
-          </div>
-        )}
-      </div>
-      <figcaption className="p-5">
-        <h4 className="font-charleville text-xl leading-snug text-[#f4ecd6]">
-          {session.title}
-        </h4>
-        {session.caption && (
-          <p className="mt-1 text-sm font-montserrat text-white/50">
-            {session.caption}
-          </p>
-        )}
-      </figcaption>
-    </figure>
   );
 }
 
@@ -156,11 +121,7 @@ function PastEdition({ event }: { event: LiveEvent }) {
           <p className="mb-4 font-montserrat text-xs uppercase tracking-widest text-white/40">
             Watch the recap
           </p>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {event.sessions.map((s) => (
-              <RecordingCard key={s.id} session={s} />
-            ))}
-          </div>
+          <RecapVideos sessions={event.sessions} />
         </div>
       )}
 

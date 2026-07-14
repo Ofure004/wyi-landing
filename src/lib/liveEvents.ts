@@ -60,6 +60,12 @@ export function drivePreviewUrl(viewUrl: string): string {
   return viewUrl.replace(/\/view.*$/, "/preview");
 }
 
+/** Extract the file ID from a Google Drive "/file/d/<id>/..." URL. */
+export function driveFileId(url: string): string {
+  const match = url.match(/\/d\/([^/]+)/);
+  return match ? match[1] : "";
+}
+
 /** Build a Google Drive image URL from a file ID (file must be link-shared). */
 export function driveImageUrl(id: string, width = 1600): string {
   return `https://drive.google.com/thumbnail?id=${id}&sz=w${width}`;
