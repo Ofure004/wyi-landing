@@ -236,18 +236,30 @@ export async function getEpisodesGrouped(): Promise<EpisodeGroup[]> {
     process.env.YOUTUBE_API_KEY && process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID
   );
 
-  if (apiConfigured) {
-    try {
-      episodes = await getEpisodesFromApi();
-    } catch (err) {
-      console.error(
-        "YouTube Data API fetch failed; falling back to RSS feed.",
-        err
-      );
+  try {
+    if (apiConfigured) {
+      try {
+        episodes = await getEpisodesFromApi();
+      } catch (err) {
+        console.error(
+          "YouTube Data API fetch failed; falling back to RSS feed.",
+          err
+        );
+        episodes = await getEpisodesFromRss();
+      }
+    } else {
       episodes = await getEpisodesFromRss();
     }
-  } else {
-    episodes = await getEpisodesFromRss();
+  } catch (err) {
+    // No configured source (e.g. missing NEXT_PUBLIC_YOUTUBE_CHANNEL_ID on a
+    // deploy preview) or a transient failure: render with no episodes rather
+    // than crashing the whole page build. ISR revalidation fills these in once
+    // a data source is reachable.
+    console.error(
+      "Episode fetch failed; rendering with no episodes for now.",
+      err
+    );
+    episodes = [];
   }
 
   const filtered = episodes.sort((a, b) => {
