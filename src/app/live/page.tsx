@@ -5,6 +5,8 @@ import { ScrollToTopButton } from "../../components/ScrollToTopButton";
 import {
   liveEvents,
   nextEvent,
+  drivePreviewUrl,
+  driveImageUrl,
   type LiveEvent,
   type LiveSession,
 } from "@/lib/liveEvents";
@@ -12,25 +14,9 @@ import {
 export const metadata: Metadata = {
   title: "Live Events",
   description:
-    "Watts Your Impact Live brings the podcast off the mic and into the room — recorded conversations with the people shaping Africa's energy future. Watch past sessions and register for the next volume.",
+    "Watts Your Impact Live brings the podcast off the mic and into the room — recorded conversations with the people shaping Africa's energy future. Watch past editions and register for what's next.",
   alternates: { canonical: "/live" },
 };
-
-const STRIPES =
-  "repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 12px, rgba(255,255,255,0.06) 12px 24px)";
-
-function PlayIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden
-    >
-      <path d="M8 5.14v13.72c0 .83.91 1.33 1.61.89l10.79-6.86a1.05 1.05 0 0 0 0-1.78L9.61 4.25A1.05 1.05 0 0 0 8 5.14Z" />
-    </svg>
-  );
-}
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
@@ -45,39 +31,59 @@ function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
-function SessionCard({ session }: { session: LiveSession }) {
+function RecordingCard({ session }: { session: LiveSession }) {
+  const src = session.videoUrl ? drivePreviewUrl(session.videoUrl) : null;
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] transition-colors hover:border-white/25">
-      <Link
-        href={session.videoUrl ?? "#"}
-        className="relative flex aspect-video items-center justify-center overflow-hidden"
-        aria-label={`Watch session ${session.number}: ${session.title}`}
-      >
-        <span
-          className="absolute inset-0"
-          style={{ backgroundImage: STRIPES }}
-          aria-hidden
-        />
-        <span className="absolute left-4 top-4 text-xs font-montserrat font-semibold uppercase tracking-wider text-[var(--brand-yellow)]">
-          Session {String(session.number).padStart(2, "0")}
-        </span>
-        <span className="absolute bottom-3 right-3 rounded bg-black/70 px-2 py-0.5 text-xs font-medium tabular-nums text-white">
-          {session.duration}
-        </span>
-        <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-yellow)] text-black shadow-lg transition-transform duration-300 group-hover:scale-110">
-          <PlayIcon className="h-5 w-5 translate-x-[1px]" />
-        </span>
-      </Link>
-      <div className="flex flex-1 flex-col p-5">
+    <figure className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+      <div className="relative aspect-video bg-black">
+        {src ? (
+          <iframe
+            src={src}
+            title={session.title}
+            loading="lazy"
+            allow="autoplay; encrypted-media; fullscreen"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-xs uppercase tracking-[0.3em] text-white/30">
+            Recording soon
+          </div>
+        )}
+      </div>
+      <figcaption className="p-5">
         <h4 className="font-charleville text-xl leading-snug text-[#f4ecd6]">
           {session.title}
         </h4>
-        <p className="mt-2 text-sm font-montserrat text-white/70">
-          {session.speaker}
-        </p>
-        <p className="text-xs font-montserrat text-white/40">{session.role}</p>
+        {session.caption && (
+          <p className="mt-1 text-sm font-montserrat text-white/50">
+            {session.caption}
+          </p>
+        )}
+      </figcaption>
+    </figure>
+  );
+}
+
+function Gallery({ ids, label }: { ids: string[]; label: string }) {
+  return (
+    <div className="mt-12">
+      <p className="mb-3 font-montserrat text-xs uppercase tracking-widest text-white/40">
+        From the room
+      </p>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {ids.map((id, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={id}
+            src={driveImageUrl(id, 800)}
+            alt={`${label} — photo ${i + 1}`}
+            loading="lazy"
+            className="aspect-square w-full rounded-xl border border-white/10 object-cover"
+          />
+        ))}
       </div>
-    </article>
+    </div>
   );
 }
 
@@ -90,9 +96,11 @@ function PastEdition({ event }: { event: LiveEvent }) {
     <div className="border-t border-white/10 pt-12">
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <span className="text-sm font-montserrat font-semibold uppercase tracking-[0.2em] text-[var(--brand-yellow)]">
-            {event.volume}
-          </span>
+          {event.edition && (
+            <span className="text-sm font-montserrat font-semibold uppercase tracking-[0.2em] text-[var(--brand-yellow)]">
+              {event.edition}
+            </span>
+          )}
           <h3 className="mt-3 font-charleville text-3xl md:text-4xl leading-tight text-[#f4ecd6] max-w-3xl">
             {event.title}
           </h3>
@@ -144,11 +152,20 @@ function PastEdition({ event }: { event: LiveEvent }) {
       )}
 
       {event.sessions.length > 0 && (
-        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {event.sessions.map((s) => (
-            <SessionCard key={s.id} session={s} />
-          ))}
+        <div className="mt-12">
+          <p className="mb-4 font-montserrat text-xs uppercase tracking-widest text-white/40">
+            Watch the recap
+          </p>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {event.sessions.map((s) => (
+              <RecordingCard key={s.id} session={s} />
+            ))}
+          </div>
         </div>
+      )}
+
+      {event.gallery && event.gallery.length > 0 && (
+        <Gallery ids={event.gallery} label={event.title} />
       )}
     </div>
   );
@@ -172,7 +189,7 @@ export default function LivePage() {
         <p className="mt-6 max-w-2xl text-base md:text-lg font-montserrat text-white/55">
           A few times a year we bring the podcast to life — gathering the
           builders, funders and operators shaping Africa&apos;s energy future
-          for one unfiltered night. Watch past sessions or claim a seat at the
+          for one unfiltered night. Watch past editions or claim a seat at the
           next one.
         </p>
         <div className="mt-10 flex flex-wrap gap-10 sm:gap-14">
@@ -194,7 +211,7 @@ export default function LivePage() {
               <div className="max-w-2xl">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[var(--brand-yellow)]/50 px-3 py-1 text-xs font-montserrat font-semibold uppercase tracking-wider text-[var(--brand-yellow)]">
                   <span className="h-2 w-2 rounded-full bg-[var(--brand-yellow)]" />
-                  Up next · {nextEvent.volume}
+                  Up next
                 </span>
                 <h2 className="mt-5 font-charleville text-3xl md:text-5xl leading-tight text-[#f4ecd6]">
                   {nextEvent.title}

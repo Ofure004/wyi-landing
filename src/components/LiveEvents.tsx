@@ -46,7 +46,7 @@ export default function LiveEvents() {
                 {isUpcoming && (
                   <span className="h-2 w-2 rounded-full bg-[var(--brand-yellow)]" />
                 )}
-                {isUpcoming ? "Up Next" : "Recap"} · {event.volume}
+                {isUpcoming ? "Up Next" : "Recap"}
               </span>
             </div>
 
