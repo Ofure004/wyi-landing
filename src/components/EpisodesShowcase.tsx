@@ -231,8 +231,16 @@ function EpisodeCard({
           <span>{formatDate(episode.publishedAt)}</span>
         </p>
 
-        <h5 className="font-charleville text-xl leading-snug text-[#f4ecd6]">
-          {episode.title}
+        <h5 className="font-charleville text-xl leading-snug text-[#f4ecd6] h-12">
+          {episode.title.split(/(\d+)/).map((part, i) =>
+            /\d/.test(part) ? (
+              <span key={i} className="font-montserrat">
+                {part}
+              </span>
+            ) : (
+              part
+            ),
+          )}
         </h5>
 
         {episode.description && (

@@ -8,7 +8,11 @@ const STRIPES =
 function HighlightTile({ item }: { item: LiveHighlight }) {
   return (
     <div className="relative flex min-h-[150px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 p-6">
-      <span className="absolute inset-0" style={{ backgroundImage: STRIPES }} aria-hidden />
+      <span
+        className="absolute inset-0"
+        style={{ backgroundImage: STRIPES }}
+        aria-hidden
+      />
       <div className="relative">
         <div className="font-montserrat font-bold text-2xl md:text-3xl text-[#f4ecd6]">
           {item.value}
@@ -28,7 +32,7 @@ export default function LiveEvents() {
 
   return (
     <section id="live" className="bg-black text-white">
-      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16 py-20 md:py-28">
+      <div className="mx-auto max-w-[1450px] px-6 md:px-12 lg:px-16 py-20 md:py-28">
         <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-7 sm:p-10 md:p-14">
           {/* Ambient glow */}
           <div

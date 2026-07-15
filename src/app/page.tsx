@@ -30,6 +30,9 @@ export default async function Home() {
     return bt - at;
   })[0];
   const episodeNumber = allEpisodes.length;
+  const heroThumbnail = latest
+    ? `https://i.ytimg.com/vi/${latest.id}/maxresdefault.jpg`
+    : null;
 
   const formatDate = (iso?: string) => {
     if (!iso) return "";
@@ -62,15 +65,16 @@ export default async function Home() {
     <div className="min-h-screen bg-black text-white">
       <section id="home" className="relative h-screen w-full">
         <Image
-          src={heroCropped}
+          src={heroThumbnail || heroCropped}
           alt="Watts Your Impact podcast — real stories from changemakers driving impact"
           fill
           priority
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
           className="object-cover object-center"
           quality={100}
+          {...(heroThumbnail ? { unoptimized: true } : {})}
         />
-        <div className="absolute w-full inset-0 bg-[#440542]/30 z-10" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
         {/* Left-center hero prompt */}
         {/* <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-30">
