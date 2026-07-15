@@ -7,7 +7,7 @@ const STRIPES =
 
 function HighlightTile({ item }: { item: LiveHighlight }) {
   return (
-    <div className="relative flex min-h-[150px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 p-6">
+    <div className="relative flex min-h-[150px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 p-6 pb-4">
       <span
         className="absolute inset-0"
         style={{ backgroundImage: STRIPES }}
@@ -17,7 +17,7 @@ function HighlightTile({ item }: { item: LiveHighlight }) {
         <div className="font-montserrat font-bold text-2xl md:text-3xl text-[#f4ecd6]">
           {item.value}
         </div>
-        <div className="mt-1 font-montserrat text-sm text-white/55">
+        <div className="mt-1 min-h-[40px] items-start font-montserrat text-sm text-white/55">
           {item.label}
         </div>
       </div>

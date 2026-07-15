@@ -113,7 +113,9 @@ function PastEdition({ event }: { event: LiveEvent }) {
       )}
 
       {event.host && (
-        <p className="mt-6 font-montserrat text-sm text-white/50">{event.host}</p>
+        <p className="mt-6 font-montserrat text-sm text-white/50">
+          {event.host}
+        </p>
       )}
 
       {event.sessions.length > 0 && (
@@ -155,7 +157,7 @@ export default function LivePage() {
         </p>
         <div className="mt-10 flex flex-wrap gap-10 sm:gap-14">
           <Stat value="2" label="Editions" />
-          <Stat value="30+" label="Attendees" />
+          <Stat value="50+" label="Attendees" />
           {/* <Stat value="13" label="Speakers" /> */}
         </div>
       </header>

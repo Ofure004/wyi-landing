@@ -76,7 +76,7 @@ export const liveEvents: LiveEvent[] = [
     id: "next-live",
     title: "The People Powering Africa's Energy Future",
     tagline:
-      "A live podcast experience bringing 4–5 of the energy sector's most influential voices together for one moderated, unfiltered conversation — professionally recorded and livestreamed for the room and the world.",
+      "Watts Your Impact Live is a live podcast experience that brings together some of the leading voices across Africa's energy ecosystem for thoughtful, unscripted conversations in front of a live audience.",
     date: "Coming 2026",
     location: "Lagos, Nigeria",
     status: "upcoming",
@@ -84,7 +84,7 @@ export const liveEvents: LiveEvent[] = [
     registerUrl:
       "mailto:info@wattsyourimpact.com?subject=Watts%20Your%20Impact%20Live%20%E2%80%94%20Register%20interest",
     highlights: [
-      { value: "4–5", label: "Energy leaders across the value chain" },
+      { value: "2", label: "Panels featuring energy leaders across the value chain" },
       { value: "50–100", label: "Guests live in the room" },
       { value: "Live + Streamed", label: "Join in person or online" },
     ],

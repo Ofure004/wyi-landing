@@ -2,12 +2,47 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import logo from "../../public/images/logo.svg";
 
+const SECTION_IDS = ["episodes", "contact"] as const;
+
 export function Nav() {
-  const [activeId, setActiveId] = useState<string>("home");
+  const pathname = usePathname();
+  const [visibleSection, setVisibleSection] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setVisibleSection(null);
+      return;
+    }
+
+    const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      Boolean,
+    ) as HTMLElement[];
+    if (els.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisibleSection(entry.target.id);
+            return;
+          }
+        }
+        setVisibleSection(null);
+      },
+      { rootMargin: "-40% 0px -40% 0px" },
+    );
+
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  const activeId =
+    pathname === "/live" ? "live" : visibleSection ?? "home";
 
   return (
     <nav className="fixed inset-x-0 top-0 z-30 font-charleville">
@@ -36,7 +71,6 @@ export function Nav() {
               <Link
                 key={item.id}
                 href={item.href}
-                onClick={() => setActiveId(item.id)}
                 className={`nav-link ${activeId === item.id ? "active" : ""}`}
                 data-replace={item.label}
                 aria-current={activeId === item.id ? "page" : undefined}
@@ -87,10 +121,7 @@ export function Nav() {
                   <Link
                     key={item.id}
                     href={item.href}
-                    onClick={() => {
-                      setActiveId(item.id);
-                      setIsOpen(false);
-                    }}
+                    onClick={() => setIsOpen(false)}
                     className={`py-2 px-2 rounded-lg ${
                       activeId === item.id
                         ? "bg-white/10 text-[var(--brand-yellow)]"
