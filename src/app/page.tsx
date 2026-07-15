@@ -5,7 +5,6 @@ import {
   SvgTiktok,
   SvgTwitter,
   SvgMail,
-  SvgApple,
   SvgSpotify,
 } from "../../public/assets/svgs";
 import heroCropped from "../../public/images/hero-cropped.jpg";
@@ -16,7 +15,8 @@ import {
   type EpisodeGroup,
   type EpisodeItem,
 } from "@/lib/episodes";
-import EpisodeListClient from "../components/EpisodeListClient";
+import EpisodesShowcase from "../components/EpisodesShowcase";
+import LiveEvents from "../components/LiveEvents";
 import { ScrollToTopButton } from "../components/ScrollToTopButton";
 
 export const revalidate = 600; // cache page data for 10 minutes
@@ -30,6 +30,9 @@ export default async function Home() {
     return bt - at;
   })[0];
   const episodeNumber = allEpisodes.length;
+  const heroThumbnail = latest
+    ? `https://i.ytimg.com/vi/${latest.id}/maxresdefault.jpg`
+    : null;
 
   const formatDate = (iso?: string) => {
     if (!iso) return "";
@@ -55,22 +58,23 @@ export default async function Home() {
         </span>
       ) : (
         <span key={idx}>{part}</span>
-      )
+      ),
     );
 
   return (
     <div className="min-h-screen bg-black text-white">
       <section id="home" className="relative h-screen w-full">
         <Image
-          src={heroCropped}
-          alt="watts your impact hero image"
+          src={heroThumbnail || heroCropped}
+          alt="Watts Your Impact podcast — real stories from changemakers driving impact"
           fill
           priority
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
           className="object-cover object-center"
           quality={100}
+          {...(heroThumbnail ? { unoptimized: true } : {})}
         />
-        <div className="absolute w-full inset-0 bg-[#440542]/30 z-10" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
         {/* Left-center hero prompt */}
         {/* <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-30">
@@ -100,7 +104,7 @@ export default async function Home() {
                 <a
                   href={latest.spotify?.spotifyUrl ?? latest.youtubeUrl}
                   target="_blank"
-                  className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border-2 border-white hover:border-none group"
+                  className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border-2 border-white hover:border-none group group/btn"
                 >
                   <span
                     className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
@@ -109,7 +113,8 @@ export default async function Home() {
                   <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
                     Listen
                   </span>
-                  <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
+                  <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover/btn:text-black" />
+                  {/* <SvgSpotify className="h-4 w-4 text-white transition-colors duration-200 group-hover/btn:text-black" /> */}
                 </a>
 
                 <a
@@ -134,89 +139,24 @@ export default async function Home() {
         <Nav />
       </section>
 
-      <section>
-        <div className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-          <div className=" mx-auto px-12 lg:px-24 py-10 md:py-12 my-10 md:my-12 flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-12">
-            <a
-              href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
-              target="_blank"
-              className="relative overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group"
-            >
-              <span
-                className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
-                aria-hidden
-              />
-              <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg md:text-xl text-left">
-                Listen on Spotify
-              </span>
-              <SvgSpotify className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
-            </a>
-
-            <a
-              href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
-              target="_blank"
-              className="relative overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg inline-flex justify-center items-center gap-3 bg-[var(--brand-pink)] group"
-            >
-              <span
-                className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
-                aria-hidden
-              />
-              <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg md:text-xl text-left">
-                Listen on Apple Podcasts
-              </span>
-              <SvgApple className="relative z-10 w-8 h-6 text-white transition-colors duration-200 group-hover:text-black" />
-            </a>
-          </div>
-        </div>
-        <div id="episodes">
-          <EpisodeListClient excludeId={latest?.id} pageSize={4} />
-        </div>
-      </section>
-      <section className="w-full border-b-2 border-[rgba(250,204,21,0.15)]">
-        <div className="mx-auto px-4 md:px-8 lg:px-24 py-10 md:py-12 mb-10 md:mb-12">
-          <h2 className="text-[var(--brand-yellow)] font-semibold font-charleville text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-            Stay posted on the latest podcast episodes.
-          </h2>
-          <p className="text-[var(--brand-yellow)] font-charleville mt-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl">
-            Listen on{" "}
-            <a
-              href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
-              target="_blank"
-              className="text-[var(--brand-orange)] underline"
-            >
-              Spotify
-            </a>{" "}
-            or{" "}
-            <a
-              href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
-              target="_blank"
-              className="text-[var(--brand-orange)] underline"
-            >
-              Apple Podcasts
-            </a>
-          </p>
-          <p className="text-[var(--brand-yellow)] font-charleville mt-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl">
-            Don&apos;t forget to subscribe to our{" "}
-            <a
-              href="https://www.youtube.com/@wattsyourimpact"
-              target="_blank"
-              className="text-[var(--brand-orange)] underline"
-            >
-              YouTube
-            </a>
-          </p>
-        </div>
-      </section>
       <section
-        id="contact"
+        id="episodes"
         className="border-b-2 border-[rgba(250,204,21,0.15)]"
       >
-        <div className="mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-12">
-          <p className="max-w-7xl text-4xl sm:text-5xl md:text-6xl italic font-bold text-center">
-            What&apos;s <br className="hidden sm:block" /> your impact?
-          </p>
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-base sm:text-lg font-medium tracking-wide max-w-xl text-center">
+        <EpisodesShowcase episodes={allEpisodes} excludeId={latest?.id} />
+      </section>
+
+      {/* Watts Your Impact Live */}
+      <LiveEvents />
+
+      <section id="contact" className="w-full">
+        <div className="mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24 flex flex-col md:flex-row items-center justify-center w-full gap-12 md:gap-16">
+          {/* What's your impact? */}
+          <div className="flex flex-col items-center gap-4 md:flex-1">
+            <p className="text-4xl sm:text-5xl md:text-6xl italic font-bold text-center font-charleville">
+              What&apos;s your impact?
+            </p>
+            <p className="text-base sm:text-base font-medium tracking-wide max-w-xl text-center">
               Everyone has the power to make an impact. Want to share how
               you&apos;re creating change — in your community, your career, or
               your own small way? Send us a mail, Let&apos;s talk about it!
@@ -229,6 +169,57 @@ export default async function Home() {
                 Send us a mail
               </p>
             </a>
+          </div>
+
+          {/* Never miss a conversation */}
+          <div className="flex flex-col items-center text-center md:flex-1">
+            <h2 className="font-charleville text-4xl sm:text-5xl md:text-6xl font-bold text-[#f4ecd6]">
+              Never miss a conversation.
+            </h2>
+            <p className="text-base sm:text-base font-medium tracking-wide max-w-xl text-center mt-4">
+              Check out our podcast on your favorite platform.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://open.spotify.com/show/2WuXt8alcwRm3FGOpt9Qkh"
+                target="_blank"
+                className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border border-white/30 hover:border-none group"
+              >
+                <span
+                  className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
+                  aria-hidden
+                />
+                <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
+                  Spotify
+                </span>
+              </a>
+              <a
+                href="https://podcasts.apple.com/us/podcast/watts-your-impact/id1791522753"
+                target="_blank"
+                className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border border-white/30 hover:border-none group"
+              >
+                <span
+                  className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
+                  aria-hidden
+                />
+                <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
+                  Apple Podcasts
+                </span>
+              </a>
+              <a
+                href="https://www.youtube.com/@wattsyourimpact"
+                target="_blank"
+                className="relative overflow-hidden rounded-xl px-6 py-3 font-semibold shadow-lg inline-flex items-center gap-3 border border-white/30 hover:border-none group"
+              >
+                <span
+                  className="absolute inset-0 bg-[var(--brand-yellow)] origin-bottom-right scale-0 transform transition-transform duration-300 group-hover:scale-100 rounded-xl"
+                  aria-hidden
+                />
+                <span className="relative z-10 text-white transition-colors duration-200 group-hover:text-black font-bold text-lg">
+                  YouTube
+                </span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

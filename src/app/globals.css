@@ -191,6 +191,14 @@ section[id] {
   transform: translate3d(-200%, 0, 0);
 }
 
+/* Yellow variant for non-nav contexts */
+.nav-link--yellow::before {
+  background-color: var(--brand-yellow);
+}
+.nav-link--yellow::after {
+  color: var(--brand-yellow);
+}
+
 /* Active link state: keep underline, make replacement color brand-pink and italic */
 .nav-link.active,
 .nav-link[aria-current="page"] {
